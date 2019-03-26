@@ -20,20 +20,18 @@ public class StreamsClient {
     properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
     properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
     properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-    var inOutTopics = new Tuple2<>("in", "out");
-
-    final var kafkaStreams = new KafkaStreams(topology(inOutTopics), properties);
+    final var inOutTopics = new Tuple2<>("in", "out");
+    final var kafkaStreams = new KafkaStreams(topologyCountAnagram(inOutTopics), properties);
     kafkaStreams.start();
   }
 
-  public static Topology topology(final Tuple2<String, String> tuple) {
+  public static Topology topologyCountAnagram(final Tuple2<String, String> tuple) {
     var streamsBuilder = new StreamsBuilder();
     var sourceStream = streamsBuilder.stream(tuple._1, Consumed.with(Serdes.String(), Serdes.String()));
     // 1. [null:"magic"] => ["acgim":"magic"]
     // 2. amount with same key
     sourceStream.map((key, value)-> {
-      final var newKey = Stream.of(value.replaceAll(" ", "")
-          .split(""))
+      final var newKey = Stream.of(value.replaceAll(" ", "").split(""))
           .sorted()
           .collect(Collectors.joining());
       return KeyValue.pair(newKey, value);
