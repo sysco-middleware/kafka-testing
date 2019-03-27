@@ -21,7 +21,24 @@
     <maven.compiler.target>11</maven.compiler.target>
 
     <kafka.apis.version>2.1.1</kafka.apis.version>
+    <confluent.platform.version>5.1.0</confluent.platform.version>
+    <avro.version>1.8.2</avro.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>confluent</id>
+      <url>http://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>confluent</id>
+      <name>Confluent</name>
+      <url>http://packages.confluent.io/maven/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
 
   <developers>
     <developer>
@@ -43,6 +60,13 @@
         <groupId>org.apache.kafka</groupId>
         <artifactId>kafka-streams</artifactId>
         <version>${kafka.apis.version}</version>
+      </dependency>
+
+      <!-- avro -->
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro</artifactId>
+        <version>${avro.version}</version>
       </dependency>
 
       <!-- logging -->
@@ -68,5 +92,22 @@
 
     </dependencies>
   </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro-maven-plugin</artifactId>
+          <version>${avro.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>io.confluent</groupId>
+          <artifactId>kafka-schema-registry-maven-plugin</artifactId>
+          <version>${confluent.platform.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>
