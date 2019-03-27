@@ -1,0 +1,10 @@
+{
+  "namespace": "no.sysco.testing.kafka.streams.avro",
+  "type": "record",
+  "name": "Person",
+  "fields": [
+    {"name": "id", "type": "string"},
+    {"name": "name", "type": "string"},
+    {"name": "lastname", "type": "string"}
+  ]
+}
