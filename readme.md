@@ -1,7 +1,7 @@
 # Kafka-clients: writing automated tests
 
 ## Clients
-- [ ] Streams API
+- [ ] Streams API (Stateless, Stateful, Avro)
 - [ ] Consumer/Producer API
 - [ ] Data pipelines
 
@@ -18,3 +18,5 @@
 * Embedded kafka
 
 
+### References
+- [Apache Kafka. Developer guide. Testing](https://kafka.apache.org/20/documentation/streams/developer-guide/testing.html)

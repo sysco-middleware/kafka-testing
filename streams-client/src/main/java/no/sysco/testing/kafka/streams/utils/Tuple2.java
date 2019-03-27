@@ -1,4 +1,4 @@
-package no.sysco.testing.kafka.streams;
+package no.sysco.testing.kafka.streams.utils;
 
 public final class Tuple2<T1,T2> {
   public final T1 _1;
