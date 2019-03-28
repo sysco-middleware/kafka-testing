@@ -19,7 +19,8 @@ public class StreamProcessing {
   // stateless
   public static Topology topologyUpperCase(final Tuple2<String, String> topics) {
     var streamsBuilder = new StreamsBuilder();
-    var sourceStream = streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));
+    var sourceStream =
+        streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));
     sourceStream
         .mapValues((ValueMapper<String, String>) String::toUpperCase)
         .to(topics._2, Produced.with(Serdes.String(), Serdes.String()));
@@ -27,23 +28,26 @@ public class StreamProcessing {
   }
 
   // stateful
-  public static Topology topologyCountAnagram(final Tuple2<String, String> topics, final String storeName) {
+  public static Topology topologyCountAnagram(
+      final Tuple2<String, String> topics, final String storeName) {
     var streamsBuilder = new StreamsBuilder();
-    var sourceStream = streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));
+    var sourceStream =
+        streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));
     // 1. [null:"magic"] => ["acgim":"magic"]
     // 2. amount with same key
-    sourceStream.map((key, value)-> {
-      final var newKey = Stream.of(value.replaceAll(" ", "").split(""))
-          .sorted()
-          .collect(Collectors.joining());
-      return KeyValue.pair(newKey, value);
-    })
+    sourceStream
+        .map(
+            (key, value) -> {
+              final var newKey =
+                  Stream.of(value.replaceAll(" ", "").split(""))
+                      .sorted()
+                      .collect(Collectors.joining());
+              return KeyValue.pair(newKey, value);
+            })
         .groupByKey()
-        .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>> as(storeName))
+        .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(storeName))
         .toStream()
         .to(topics._2, Produced.with(Serdes.String(), Serdes.Long()));
     return streamsBuilder.build();
   }
-
-
 }

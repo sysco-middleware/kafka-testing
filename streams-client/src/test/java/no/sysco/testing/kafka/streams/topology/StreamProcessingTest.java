@@ -19,13 +19,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class StreamProcessingTest {
-  private TopologyTestDriver testDriver;
-  private Properties properties;
   private final String topicIn = "topic-in";
   private final String topicOut = "topic-out";
+  private TopologyTestDriver testDriver;
+  private Properties properties;
 
   @Before
   public void start() {
@@ -48,17 +49,19 @@ public class StreamProcessingTest {
     // Arrange
     final Topology topology = StreamProcessing.topologyUpperCase(new Tuple2<>(topicIn, topicOut));
     testDriver = new TopologyTestDriver(topology, properties);
-    final ConsumerRecordFactory<String, String>
-        factory = new ConsumerRecordFactory<>(topicIn, new StringSerializer(), new StringSerializer());
+    final ConsumerRecordFactory<String, String> factory =
+        new ConsumerRecordFactory<>(topicIn, new StringSerializer(), new StringSerializer());
     final ConsumerRecord<byte[], byte[]> record1 = factory.create(topicIn, null, "magic");
     final ConsumerRecord<byte[], byte[]> record2 = factory.create(topicIn, null, "cigma");
 
     // Act
-    testDriver.pipeInput(List.of(record1,record2));
-    final ProducerRecord<String, String> outRecord1 = testDriver.readOutput(topicOut, new StringDeserializer(), new StringDeserializer());
-    final ProducerRecord<String, String> outRecord2 = testDriver.readOutput(topicOut, new StringDeserializer(), new StringDeserializer());
-    final ProducerRecord<String, String> outRecord3 = testDriver.readOutput(topicOut, new StringDeserializer(), new StringDeserializer());
-
+    testDriver.pipeInput(List.of(record1, record2));
+    final ProducerRecord<String, String> outRecord1 =
+        testDriver.readOutput(topicOut, new StringDeserializer(), new StringDeserializer());
+    final ProducerRecord<String, String> outRecord2 =
+        testDriver.readOutput(topicOut, new StringDeserializer(), new StringDeserializer());
+    final ProducerRecord<String, String> outRecord3 =
+        testDriver.readOutput(topicOut, new StringDeserializer(), new StringDeserializer());
 
     // Assert
     assertNull(outRecord3);
@@ -71,20 +74,23 @@ public class StreamProcessingTest {
 
     // Arrange
     final String storeName = "count-storage";
-    final Topology topology = StreamProcessing.topologyCountAnagram(new Tuple2<>(topicIn, topicOut), storeName);
+    final Topology topology =
+        StreamProcessing.topologyCountAnagram(new Tuple2<>(topicIn, topicOut), storeName);
     // setup TopologyTestDriver
     testDriver = new TopologyTestDriver(topology, properties);
-    final ConsumerRecordFactory<String, String>
-        factory = new ConsumerRecordFactory<>(topicIn, new StringSerializer(), new StringSerializer());
+    final ConsumerRecordFactory<String, String> factory =
+        new ConsumerRecordFactory<>(topicIn, new StringSerializer(), new StringSerializer());
     final ConsumerRecord<byte[], byte[]> record1 = factory.create(topicIn, null, "magic");
     final ConsumerRecord<byte[], byte[]> record2 = factory.create(topicIn, null, "cigma");
 
     // Act
-    testDriver.pipeInput(List.of(record1,record2));
-    final ProducerRecord<String, Long>
-        outRecord1 = testDriver.readOutput(topicOut, new StringDeserializer(), new LongDeserializer());
-    final ProducerRecord<String, Long> outRecord2 = testDriver.readOutput(topicOut, new StringDeserializer(), new LongDeserializer());
-    final ProducerRecord<String, Long> outRecord3 = testDriver.readOutput(topicOut, new StringDeserializer(), new LongDeserializer());
+    testDriver.pipeInput(List.of(record1, record2));
+    final ProducerRecord<String, Long> outRecord1 =
+        testDriver.readOutput(topicOut, new StringDeserializer(), new LongDeserializer());
+    final ProducerRecord<String, Long> outRecord2 =
+        testDriver.readOutput(topicOut, new StringDeserializer(), new LongDeserializer());
+    final ProducerRecord<String, Long> outRecord3 =
+        testDriver.readOutput(topicOut, new StringDeserializer(), new LongDeserializer());
 
     // accessing storage
     final KeyValueStore<String, Long> keyValueStore = testDriver.getKeyValueStore(storeName);
@@ -98,6 +104,4 @@ public class StreamProcessingTest {
     assertEquals(Long.valueOf(2), outRecord2.value());
     assertEquals(Long.valueOf(2), amountOfRecordsInStorageByKey);
   }
-
-
 }
