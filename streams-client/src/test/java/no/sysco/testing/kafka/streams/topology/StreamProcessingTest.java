@@ -1,5 +1,6 @@
 package no.sysco.testing.kafka.streams.topology;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -55,7 +56,7 @@ public class StreamProcessingTest {
     final ConsumerRecord<byte[], byte[]> record2 = factory.create(topicIn, null, "cigma");
 
     // Act
-    testDriver.pipeInput(List.of(record1, record2));
+    testDriver.pipeInput(Arrays.asList(record1, record2));
     final ProducerRecord<String, String> outRecord1 =
         testDriver.readOutput(topicOut, new StringDeserializer(), new StringDeserializer());
     final ProducerRecord<String, String> outRecord2 =
@@ -84,7 +85,7 @@ public class StreamProcessingTest {
     final ConsumerRecord<byte[], byte[]> record2 = factory.create(topicIn, null, "cigma");
 
     // Act
-    testDriver.pipeInput(List.of(record1, record2));
+    testDriver.pipeInput(Arrays.asList(record1, record2));
     final ProducerRecord<String, Long> outRecord1 =
         testDriver.readOutput(topicOut, new StringDeserializer(), new LongDeserializer());
     final ProducerRecord<String, Long> outRecord2 =

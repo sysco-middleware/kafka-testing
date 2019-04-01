@@ -9,6 +9,7 @@ import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.ValueMapper;
@@ -18,9 +19,10 @@ public class StreamProcessing {
 
   // stateless
   public static Topology topologyUpperCase(final Tuple2<String, String> topics) {
-    var streamsBuilder = new StreamsBuilder();
-    var sourceStream =
+    final StreamsBuilder streamsBuilder = new StreamsBuilder();
+    final KStream<String, String> sourceStream =
         streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));
+
     sourceStream
         .mapValues((ValueMapper<String, String>) String::toUpperCase)
         .to(topics._2, Produced.with(Serdes.String(), Serdes.String()));
@@ -28,17 +30,16 @@ public class StreamProcessing {
   }
 
   // stateful
-  public static Topology topologyCountAnagram(
-      final Tuple2<String, String> topics, final String storeName) {
-    var streamsBuilder = new StreamsBuilder();
-    var sourceStream =
+  public static Topology topologyCountAnagram(final Tuple2<String, String> topics, final String storeName) {
+    final StreamsBuilder streamsBuilder = new StreamsBuilder();
+    final KStream<String, String> sourceStream =
         streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));
     // 1. [null:"magic"] => ["acgim":"magic"]
     // 2. amount with same key
     sourceStream
         .map(
             (key, value) -> {
-              final var newKey =
+              final String newKey =
                   Stream.of(value.replaceAll(" ", "").split(""))
                       .sorted()
                       .collect(Collectors.joining());

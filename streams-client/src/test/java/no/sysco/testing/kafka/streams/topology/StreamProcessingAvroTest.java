@@ -6,12 +6,15 @@ import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.subject.TopicNameStrategy;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import no.sysco.testing.kafka.streams.avro.Person;
 import no.sysco.testing.kafka.streams.utils.Tuple2;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -69,32 +72,32 @@ public class StreamProcessingAvroTest {
         new TopicNameStrategy().subjectName(topicIn, false, Person.SCHEMA$), Person.SCHEMA$);
     // create serde with config to be able to connect to mock schema registry
     final SpecificAvroSerde<Person> serde = new SpecificAvroSerde<>(schemaRegistryClient);
-    final var schema =
-        Collections.singletonMap(
-            AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
-            "wat-ever-url-anyway-it-is-mocked");
+
+    final Map<String, String> schema = Collections.singletonMap(
+        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
+        "wat-ever-url-anyway-it-is-mocked");
     serde.configure(schema, false);
     // get topology
     final Topology topology =
         StreamProcessingAvro.topologyUpperCase(new Tuple2<>(topicIn, topicOut), serde);
     testDriver = new TopologyTestDriver(topology, properties);
 
-    final var factory =
-        new ConsumerRecordFactory<String, Person>(
+    final ConsumerRecordFactory<String, Person> factory =
+        new ConsumerRecordFactory<>(
             topicIn, new StringSerializer(), serde.serializer());
-    final var inRecord1 =
-        factory.create(
-            topicIn,
-            "1",
-            Person.newBuilder().setId("id-1").setName("nikita").setLastname("zhevnitskiy").build());
-    final var inRecord2 =
-        factory.create(
-            topicIn,
-            "2",
-            Person.newBuilder().setId("id-2").setName("vitaly").setLastname("moscow").build());
+
+    final ConsumerRecord<byte[], byte[]> inRecord1 = factory.create(
+        topicIn,
+        "1",
+        Person.newBuilder().setId("id-1").setName("nikita").setLastname("zhevnitskiy").build());
+
+    final ConsumerRecord<byte[], byte[]> inRecord2 = factory.create(
+        topicIn,
+        "2",
+        Person.newBuilder().setId("id-2").setName("vitaly").setLastname("moscow").build());
 
     /** Act */
-    testDriver.pipeInput(List.of(inRecord1, inRecord2));
+    testDriver.pipeInput(Arrays.asList(inRecord1, inRecord2));
     final ProducerRecord<String, Person> outRecord1 =
         testDriver.readOutput(topicOut, new StringDeserializer(), serde.deserializer());
     final ProducerRecord<String, Person> outRecord2 =
@@ -115,10 +118,10 @@ public class StreamProcessingAvroTest {
         new TopicNameStrategy().subjectName(topicIn, false, Person.SCHEMA$), Person.SCHEMA$);
     // create serde with config to be able to connect to mock schema registry
     final SpecificAvroSerde<Person> serde = new SpecificAvroSerde<>(schemaRegistryClient);
-    final var schema =
-        Collections.singletonMap(
-            AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
-            "wat-ever-url-anyway-it-is-mocked");
+
+    final Map<String, String> schema = Collections.singletonMap(
+        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
+        "wat-ever-url-anyway-it-is-mocked");
     serde.configure(schema, false);
     // get topology
     final Topology topology =
@@ -126,22 +129,22 @@ public class StreamProcessingAvroTest {
             new Tuple2<>(topicIn, topicOut), serde, storeName);
     testDriver = new TopologyTestDriver(topology, properties);
 
-    final var factory =
-        new ConsumerRecordFactory<String, Person>(
+    final ConsumerRecordFactory<String, Person> factory =
+        new ConsumerRecordFactory<>(
             topicIn, new StringSerializer(), serde.serializer());
-    final var inRecord1 =
-        factory.create(
-            topicIn,
-            "1",
-            Person.newBuilder().setId("id-1").setName("nikita").setLastname("zhevnitskiy").build());
-    final var inRecord2 =
-        factory.create(
-            topicIn,
-            "2",
-            Person.newBuilder().setId("id-2").setName("nikita").setLastname("moscow").build());
+
+    final ConsumerRecord<byte[], byte[]> inRecord1 = factory.create(
+        topicIn,
+        "1",
+        Person.newBuilder().setId("id-1").setName("nikita").setLastname("zhevnitskiy").build());
+
+    final ConsumerRecord<byte[], byte[]> inRecord2 = factory.create(
+        topicIn,
+        "2",
+        Person.newBuilder().setId("id-2").setName("nikita").setLastname("moscow").build());
 
     /** Act */
-    testDriver.pipeInput(List.of(inRecord1, inRecord2));
+    testDriver.pipeInput(Arrays.asList(inRecord1, inRecord2));
     final KeyValueStore<String, Long> keyValueStore = testDriver.getKeyValueStore(storeName);
     final Long amountOfRecordWithSameName = keyValueStore.get("nikita");
 

@@ -17,7 +17,7 @@ public class StreamProcessingAvro {
   // stateless
   public static Topology topologyUpperCase(
       final Tuple2<String, String> topics, final Serde<Person> personSerdes) {
-    final var builder = new StreamsBuilder();
+    final StreamsBuilder builder = new StreamsBuilder();
     builder.stream(topics._1, Consumed.with(Serdes.String(), personSerdes))
         // .peek((k, v) -> System.out.printf("%s %s %s\n", v.getId(), v.getName(), v.getLastname()))
         .mapValues(
@@ -37,7 +37,7 @@ public class StreamProcessingAvro {
       final Serde<Person> personSerdes,
       final String storeName) {
 
-    final var builder = new StreamsBuilder();
+    final StreamsBuilder builder = new StreamsBuilder();
     builder.stream(topics._1, Consumed.with(Serdes.String(), personSerdes))
         .groupBy((key, value) -> value.getName())
         .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(storeName))
