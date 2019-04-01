@@ -1,11 +1,9 @@
-package no.sysco.testing.kafka.producer.utils;
+package no.sysco.testing.kafka.embedded;
 
+import java.io.IOException;
 import org.apache.curator.test.TestingServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-
 
 /**
  * https://github.com/confluentinc/kafka-streams-examples/tree/5.2.0-post/src/test/java/io/confluent/examples/streams/zookeeper
