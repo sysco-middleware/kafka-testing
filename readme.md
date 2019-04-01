@@ -17,9 +17,13 @@
 - [ ] Embedded kafka
 
 ### TODO:
-- update vers kafka `2.1.1 -> 2.2` 
-- update vers java  `11 -> 12` 
-- update vers junit `4 -> 5`  
+- update vers java  `8 -> 12` 
+- update vers junit `4 -> 5` 
+
+`!NB`: Reflection use -> only java8 currently  
+
+### Important notes
+ - [Confluent Platform and Apache Kafka Compatibility](https://docs.confluent.io/current/installation/versions-interoperability.html#cp-and-apache-kafka-compatibility)
 
 ### References
 - [Apache Kafka. Developer guide. Testing](https://kafka.apache.org/20/documentation/streams/developer-guide/testing.html)
