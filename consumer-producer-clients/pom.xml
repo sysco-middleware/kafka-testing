@@ -41,51 +41,10 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
-
-
     <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka_2.11</artifactId>
-      <version>${kafka.apis.version}</version>
+      <groupId>no.sysco.testing</groupId>
+      <artifactId>embedded-cluster</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.curator</groupId>
-      <artifactId>curator-test</artifactId>
-      <version>2.9.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka_2.11</artifactId>
-      <classifier>test</classifier>
-      <scope>test</scope>
-      <version>${kafka.apis.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-clients</artifactId>
-      <version>${kafka.apis.version}</version>
-      <classifier>test</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.confluent</groupId>
-      <artifactId>kafka-schema-registry</artifactId>
-      <version>${confluent.platform.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.confluent</groupId>
-      <artifactId>kafka-schema-registry</artifactId>
-      <version>${confluent.platform.version}</version>
-      <!-- Required for e.g. schema registry's RestApp -->
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-
 
   </dependencies>
 

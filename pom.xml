@@ -12,6 +12,7 @@
   <modules>
     <module>streams-client</module>
     <module>consumer-producer-clients</module>
+    <module>embedded-cluster</module>
   </modules>
 
   <properties>
@@ -53,6 +54,13 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>no.sysco.testing</groupId>
+        <artifactId>embedded-cluster</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- kafka clients -->
       <dependency>
         <groupId>org.apache.kafka</groupId>

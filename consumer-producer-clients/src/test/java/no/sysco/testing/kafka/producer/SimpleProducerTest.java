@@ -2,23 +2,17 @@ package no.sysco.testing.kafka.producer;
 
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import kafka.server.KafkaConfig;
-import kafka.server.KafkaServerStartable;
-import no.sysco.testing.kafka.producer.utils.EmbeddedSingleNodeKafkaCluster;
+import no.sysco.testing.kafka.embedded.EmbeddedSingleNodeKafkaCluster;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.test.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -32,12 +26,12 @@ public class SimpleProducerTest {
 
   @ClassRule
   public static final EmbeddedSingleNodeKafkaCluster CLUSTER = new EmbeddedSingleNodeKafkaCluster();
-  private static final String topic = "topic";
 
+  private static final String topic = "topic";
 
   @BeforeClass
   public static void createTopics() throws Exception {
-    //CLUSTER.start();
+    // CLUSTER.start();
     CLUSTER.createTopic(topic);
   }
 
@@ -93,8 +87,8 @@ public class SimpleProducerTest {
     properties.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
     properties.put(ProducerConfig.LINGER_MS_CONFIG, 1);
     // be sure to use `http://`
-    properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
+    properties.put(
+        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
     return properties;
   }
-
 }
