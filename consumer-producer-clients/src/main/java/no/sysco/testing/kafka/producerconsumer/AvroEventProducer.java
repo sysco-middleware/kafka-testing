@@ -1,4 +1,4 @@
-package no.sysco.testing.kafka.producer;
+package no.sysco.testing.kafka.producerconsumer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,13 +12,13 @@ import java.util.logging.Logger;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-public final class SimpleProducer {
+public final class AvroEventProducer {
   private final Properties properties;
   private KafkaProducer<String, String> producer;
   private String topicName;
-  private static final Logger logger = Logger.getLogger(SimpleProducer.class.getName());
+  private static final Logger logger = Logger.getLogger(AvroEventProducer.class.getName());
 
-  public SimpleProducer(Properties properties, String topicName) {
+  public AvroEventProducer(Properties properties, String topicName) {
     this.properties = properties;
     this.topicName = topicName;
     this.producer = new KafkaProducer<String, String>(properties);
