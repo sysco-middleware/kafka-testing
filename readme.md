@@ -1,26 +1,17 @@
-# Kafka-clients: writing automated tests
+# Kafka-clients: writing automated tests [WIP]
 
-## Clients
-- [X] Streams API (Stateless, Stateful)
-- [ ] Consumer/Producer API
-- [ ] Data pipelines
+## Test approaches
+1. [kafka-streams-test-utils](https://kafka.apache.org/21/documentation/streams/developer-guide/testing.html) 
+for `unit` testing Topologies in [streams-client module](./streams-client). 
+Approach covers testing topologies (stateful & stateless processors) with different `serdes` including [avro](https://avro.apache.org/docs/1.8.2/spec.html) use-cases with [confluent schema registry](https://docs.confluent.io/current/schema-registry/index.html).
+2. [embedded-kafka-cluster](./consumer-producer-clients) for `unit testing` and `IT` kafka-client application in isolation. 
+3. [test-containers](https://github.com/testcontainers/testcontainers-java) for `IT` and `end-to-end` tests.
 
-### Streams API
-- [X] Topology using dsl + local storage + avro schemas
-- [ ] Topology using processor api + local storage + avro schemas
 
-### Consumer/Producer API
-- [ ] Test with embedded kafka
-
-### Data pipelines
-- [ ] Testcontainers
-- [ ] Embedded kafka
 
 ### TODO:
-- update vers java  `8 -> 12` 
+- update vers java  `8 -> 12`  `!NB`: Reflection use -> only java8 currently 
 - update vers junit `4 -> 5` 
-
-`!NB`: Reflection use -> only java8 currently  
 
 ### Important notes
  - [Confluent Platform and Apache Kafka Compatibility](https://docs.confluent.io/current/installation/versions-interoperability.html#cp-and-apache-kafka-compatibility)
