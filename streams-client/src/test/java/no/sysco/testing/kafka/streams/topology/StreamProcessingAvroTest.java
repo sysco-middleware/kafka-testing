@@ -71,6 +71,8 @@ public class StreamProcessingAvroTest {
     schemaRegistryClient.register(
         new TopicNameStrategy().subjectName(topicIn, false, Person.SCHEMA$), Person.SCHEMA$);
     // create serde with config to be able to connect to mock schema registry
+    // https://github.com/confluentinc/schema-registry/issues/877
+    // Passing Schema Registry URL twice to instantiate KafkaAvroSerializer or Serde
     final SpecificAvroSerde<Person> serde = new SpecificAvroSerde<>(schemaRegistryClient);
 
     final Map<String, String> schema = Collections.singletonMap(
