@@ -18,3 +18,4 @@ Approach covers testing topologies (stateful & stateless processors) with differ
 
 ### References
 - [Apache Kafka. Developer guide. Testing](https://kafka.apache.org/20/documentation/streams/developer-guide/testing.html)
+- [Getting Your Feet Wet with Stream Processing – Part 2: Testing Your Streaming Application](https://www.confluent.io/blog/stream-processing-part-2-testing-your-streaming-application)
