@@ -13,6 +13,7 @@
     <module>streams-client</module>
     <module>consumer-producer-clients</module>
     <module>embedded-cluster</module>
+    <module>data-pipeline</module>
   </modules>
 
   <properties>
@@ -73,11 +74,16 @@
         <version>${kafka.apis.version}</version>
       </dependency>
 
-      <!-- avro -->
+      <!-- avro related-->
       <dependency>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro</artifactId>
         <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-avro-serializer</artifactId>
+        <version>${confluent.platform.version}</version>
       </dependency>
 
       <!-- logging -->
