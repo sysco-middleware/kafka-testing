@@ -23,7 +23,6 @@
     <dependency>
       <groupId>io.confluent</groupId>
       <artifactId>kafka-avro-serializer</artifactId>
-      <version>${confluent.platform.version}</version>
     </dependency>
 
     <dependency>
