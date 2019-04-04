@@ -26,6 +26,7 @@
     <confluent.platform.version>5.1.1</confluent.platform.version>
 
     <avro.version>1.8.2</avro.version>
+    <slf4j.logger.version>1.7.25</slf4j.logger.version>
   </properties>
 
   <repositories>
@@ -90,12 +91,12 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
-        <version>1.7.25</version>
+        <version>${slf4j.logger.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.7.25</version>
+        <version>${slf4j.logger.version}</version>
       </dependency>
 
       <!-- test dependencies -->
