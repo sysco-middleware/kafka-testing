@@ -37,6 +37,33 @@
           <stringType>String</stringType>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-schema-registry-maven-plugin</artifactId>
+        <configuration>
+          <schemaRegistryUrls>
+            <param>http://localhost:8081</param>
+          </schemaRegistryUrls>
+          <subjects>
+            <events-message-v1-value>src/main/resources/avro/message.avsc</events-message-v1-value>
+          </subjects>
+          <outputDirectory/>
+        </configuration>
+        <goals>
+          <goal>test-compatibility</goal>
+          <goal>register</goal>
+        </goals>
+        <!-- exec on project build -->
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>test-compatibility</goal>
+              <goal>register</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
