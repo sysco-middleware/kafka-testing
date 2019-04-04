@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ApplicationConfig extends Configuration {
 
@@ -30,15 +28,24 @@ public class ApplicationConfig extends Configuration {
   public static class KafkaClientFactory<K, V> {
 
     @Valid @NotNull private String bootstrapServers;
+    @Valid @NotNull private String sinkTopic;
 
     public KafkaClientFactory() {}
-    public KafkaClientFactory(String bootstrapServers) { this.bootstrapServers = bootstrapServers; }
+
+    public KafkaClientFactory(String bootstrapServers, String sinkTopic) {
+      this.bootstrapServers = bootstrapServers;
+      this.sinkTopic = sinkTopic;
+    }
 
     public String getBootstrapServers() { return bootstrapServers; }
     public void setBootstrapServers(String bootstrapServers) { this.bootstrapServers = bootstrapServers; }
+    public String getSinkTopic() { return sinkTopic; }
+    public void setSinkTopic(String sinkTopic) { this.sinkTopic = sinkTopic; }
+
     @Override public String toString() {
       return "KafkaClientFactory{" +
           "bootstrapServers='" + bootstrapServers + '\'' +
+          ", sinkTopic='" + sinkTopic + '\'' +
           '}';
     }
   }

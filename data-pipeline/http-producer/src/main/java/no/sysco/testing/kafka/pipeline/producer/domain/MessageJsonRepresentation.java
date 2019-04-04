@@ -1,4 +1,4 @@
-package no.sysco.testing.kafka.pipeline.producer.interfaces.rest.domain;
+package no.sysco.testing.kafka.pipeline.producer.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
