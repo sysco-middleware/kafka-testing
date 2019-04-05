@@ -28,7 +28,7 @@ public class Application extends io.dropwizard.Application<ApplicationConfig> {
 
   @Override public void run(ApplicationConfig applicationConfig, Environment environment) {
     log.info("Configuration:\n "+ applicationConfig);
-    environment.healthChecks().register("APIHealthCheck", new ApplicationHealthCheck());
+    environment.healthChecks().register(applicationConfig.getName()+"HealthCheck", new ApplicationHealthCheck());
 
     KafkaMessageProducer messageProducer = new KafkaMessageProducer(applicationConfig);
     MessageRepresentationTransformer transformer = new MessageRepresentationTransformer();
