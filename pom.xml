@@ -86,6 +86,11 @@
         <artifactId>kafka-avro-serializer</artifactId>
         <version>${confluent.platform.version}</version>
       </dependency>
+      <dependency>
+        <groupId>io.confluent</groupId>
+        <artifactId>kafka-streams-avro-serde</artifactId>
+        <version>${confluent.platform.version}</version>
+      </dependency>
 
       <!-- logging -->
       <dependency>
