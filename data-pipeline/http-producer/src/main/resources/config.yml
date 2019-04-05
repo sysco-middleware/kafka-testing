@@ -10,5 +10,6 @@ server:
       port: ${ADMIN_PORT:-18081}
 
 kafka:
-  bootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS:-127.0.0.1:9092}
-  sink-topic: ${SINK_TOPIC:-events-message-v1}
+  bootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS:-127.0.0.1:29092}
+  schemaRegistryUrl: ${SCHEMA_REGISTRY_URL:-http://127.0.0.1:8081}
+  sinkTopic: ${SINK_TOPIC:-events-message-v1}

@@ -1,5 +1,8 @@
 package no.sysco.testing.kafka.pipeline.producer.infrastructure.kafka;
 
+import io.confluent.kafka.serializers.AbstractKafkaAvroDeserializer;
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDe;
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -24,11 +27,12 @@ public class KafkaMessageProducer {
     props.put(ProducerConfig.ACKS_CONFIG, "all");
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-    props.put(ProducerConfig.RETRIES_CONFIG, 0);
-    props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
-    props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
+    //props.put(ProducerConfig.RETRIES_CONFIG, 0);
+    //props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
+    //props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
+    props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, applicationConfig.getKafkaClientFactory().getSchemaRegistryUrl());
     this.sinkTopic = applicationConfig.getKafkaClientFactory().getSinkTopic();
-    this.producer = new org.apache.kafka.clients.producer.KafkaProducer<>(props);
+    this.producer = new KafkaProducer<>(props);
   }
 
   public void producerMessage(final Message message) {

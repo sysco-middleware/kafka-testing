@@ -26,9 +26,9 @@ public class Application extends io.dropwizard.Application<ApplicationConfig> {
     super.initialize(bootstrap);
   }
 
-  @Override public void run(ApplicationConfig applicationConfig, Environment environment)
-      throws Exception {
+  @Override public void run(ApplicationConfig applicationConfig, Environment environment) {
     log.info("Configuration:\n "+ applicationConfig);
+    environment.healthChecks().register("APIHealthCheck", new ApplicationHealthCheck());
 
     KafkaMessageProducer messageProducer = new KafkaMessageProducer(applicationConfig);
     MessageRepresentationTransformer transformer = new MessageRepresentationTransformer();

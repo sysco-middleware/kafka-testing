@@ -28,12 +28,15 @@ public class ApplicationConfig extends Configuration {
   public static class KafkaClientFactory<K, V> {
 
     @Valid @NotNull private String bootstrapServers;
+    @Valid @NotNull private String schemaRegistryUrl;
     @Valid @NotNull private String sinkTopic;
 
     public KafkaClientFactory() {}
 
-    public KafkaClientFactory(String bootstrapServers, String sinkTopic) {
+    public KafkaClientFactory(String bootstrapServers, String schemaRegistryUrl,
+        String sinkTopic) {
       this.bootstrapServers = bootstrapServers;
+      this.schemaRegistryUrl = schemaRegistryUrl;
       this.sinkTopic = sinkTopic;
     }
 
@@ -41,10 +44,13 @@ public class ApplicationConfig extends Configuration {
     public void setBootstrapServers(String bootstrapServers) { this.bootstrapServers = bootstrapServers; }
     public String getSinkTopic() { return sinkTopic; }
     public void setSinkTopic(String sinkTopic) { this.sinkTopic = sinkTopic; }
+    public String getSchemaRegistryUrl() { return schemaRegistryUrl; }
+    public void setSchemaRegistryUrl(String schemaRegistryUrl) { this.schemaRegistryUrl = schemaRegistryUrl; }
 
     @Override public String toString() {
       return "KafkaClientFactory{" +
           "bootstrapServers='" + bootstrapServers + '\'' +
+          ", schemaRegistryUrl='" + schemaRegistryUrl + '\'' +
           ", sinkTopic='" + sinkTopic + '\'' +
           '}';
     }
