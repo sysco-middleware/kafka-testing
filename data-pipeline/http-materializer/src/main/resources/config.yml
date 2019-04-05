@@ -1,0 +1,15 @@
+---
+name: http-materializer
+
+server:
+  applicationConnectors:
+    - type: http
+      port: ${APPLICATION_PORT:-28080}
+  adminConnectors:
+    - type: http
+      port: ${ADMIN_PORT:-28081}
+
+kafka:
+  bootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS:-127.0.0.1:29092}
+  schemaRegistryUrl: ${SCHEMA_REGISTRY_URL:-http://127.0.0.1:8081}
+  sourceTopic: ${SOURCE_TOPIC:-events-message-v1}
