@@ -41,7 +41,7 @@ public class Application extends io.dropwizard.Application<ApplicationConfig> {
     );
 
     final ExecutorService executorService = environment.lifecycle()
-        .executorService("kafka-consumer-activity-command")
+        .executorService("kafka-message-materializer")
         // horizontal scaling on app level, up to 10 threads, depends on source-topic partitions amount
         .maxThreads(10)
         .build();
