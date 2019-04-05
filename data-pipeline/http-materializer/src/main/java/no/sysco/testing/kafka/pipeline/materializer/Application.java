@@ -4,8 +4,12 @@ import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Logger;
-
+import no.sysco.testing.kafka.pipeline.materializer.domain.MessageRepresentationTransformer;
+import no.sysco.testing.kafka.pipeline.materializer.infrastructure.kafka.KafkaMessageMaterializer;
+import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebService;
+import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebServiceInMemmory;
 
 public class Application extends io.dropwizard.Application<ApplicationConfig> {
 
@@ -26,12 +30,22 @@ public class Application extends io.dropwizard.Application<ApplicationConfig> {
 
   @Override public void run(ApplicationConfig applicationConfig, Environment environment) {
     log.info("Configuration:\n "+ applicationConfig);
-    environment.healthChecks().register("APIHealthCheck", new ApplicationHealthCheck());
+    environment.healthChecks().register(applicationConfig.getName()+"HealthCheck", new ApplicationHealthCheck());
 
+    final DatabaseWebService dbWebService = new DatabaseWebServiceInMemmory();
+    final MessageRepresentationTransformer transformer = new MessageRepresentationTransformer();
+    final KafkaMessageMaterializer kafkaMessageMaterializer = new KafkaMessageMaterializer(
+        applicationConfig,
+        dbWebService,
+        transformer
+    );
 
-
-    // register REST endpoints
-    //environment.jersey().register(messageResources);
-
+    final ExecutorService executorService = environment.lifecycle()
+        .executorService("kafka-consumer-activity-command")
+        // horizontal scaling on app level, up to 10 threads, depends on source-topic partitions amount
+        .maxThreads(10)
+        .build();
+    executorService.submit(kafkaMessageMaterializer);
+    Runtime.getRuntime().addShutdownHook(new Thread(kafkaMessageMaterializer::stop));
   }
 }

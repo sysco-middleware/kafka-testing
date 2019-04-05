@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.logging.Logger;
 import no.sysco.testing.kafka.pipeline.avro.Message;
@@ -18,7 +19,7 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 
-public class KafkaMessageMaterializer {
+public class KafkaMessageMaterializer implements Runnable {
   private static final Logger log = Logger.getLogger(KafkaMessageMaterializer.class.getName());
 
   private final ApplicationConfig config;
@@ -67,4 +68,9 @@ public class KafkaMessageMaterializer {
 
     return builder.build();
   }
+
+  @Override public void run() {
+    kafkaStreams.start();
+  }
+  public void stop() { Optional.ofNullable(kafkaStreams).ifPresent(KafkaStreams::close); }
 }

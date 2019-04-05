@@ -6,6 +6,7 @@ for `unit` testing Topologies in [streams-client module](./streams-client).
 Approach covers testing topologies (stateful & stateless processors) with different `serdes` including [avro](https://avro.apache.org/docs/1.8.2/spec.html) use-cases with [confluent schema registry](https://docs.confluent.io/current/schema-registry/index.html).
 2. [embedded-kafka-cluster](./consumer-producer-clients) for `unit testing` and `IT` kafka-client application in isolation. 
 3. [test-containers](https://github.com/testcontainers/testcontainers-java) for `IT` and `end-to-end` tests.
+4. [data-pipeline](./data-pipeline) different approaches how to make `end-to-end` tests.
 
 
 
