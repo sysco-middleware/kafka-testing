@@ -1,17 +1,13 @@
-package no.sysco.testing.kafka;
+package no.sysco.testing.kafka.producerconsumer;
 
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import no.sysco.testing.kafka.embedded.EmbeddedSingleNodeKafkaCluster;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -29,8 +25,6 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -94,13 +88,12 @@ public class SimpleProducerConsumerTest {
     final RecordMetadata recordMetadata =
         producer.send(new ProducerRecord<>(topic, "k3", "v3")).get(1, TimeUnit.SECONDS);
 
-
     int acc = 0;
     boolean matched = false;
     final KafkaConsumer<String, String> consumer = new KafkaConsumer<>(getConsumerProperties());
     consumer.subscribe(Collections.singletonList(topic));
 
-    while (acc<3){
+    while (acc < 3) {
       final ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
       for (final ConsumerRecord<String, String> record : records) {
         if ("k3".equals(record.key())) matched = true;
@@ -121,12 +114,12 @@ public class SimpleProducerConsumerTest {
     properties.put(ProducerConfig.ACKS_CONFIG, "all");
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    //properties.put(ProducerConfig.RETRIES_CONFIG, 0);
+    // properties.put(ProducerConfig.RETRIES_CONFIG, 0);
     // tune (increase) throughput
-    //properties.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
-    //properties.put(ProducerConfig.LINGER_MS_CONFIG, 1);
+    // properties.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
+    // properties.put(ProducerConfig.LINGER_MS_CONFIG, 1);
     // be sure to use `http://`
-    //properties.put(
+    // properties.put(
     //    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
     return properties;
   }
@@ -140,7 +133,7 @@ public class SimpleProducerConsumerTest {
     properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     // be sure to use `http://`
-    //properties.put(
+    // properties.put(
     //    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
     return properties;
   }

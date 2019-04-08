@@ -1,0 +1,10 @@
+{
+  "namespace": "no.sysco.testing.kafka.producerconsumer",
+  "type": "record",
+  "name": "Event",
+  "fields": [
+    {"name": "id", "type": "string"},
+    {"name": "type", "type": "string"},
+    {"name": "context", "type": "string"}
+  ]
+}
