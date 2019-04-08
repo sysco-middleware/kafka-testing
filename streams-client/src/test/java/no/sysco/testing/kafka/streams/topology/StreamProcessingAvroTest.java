@@ -67,9 +67,9 @@ public class StreamProcessingAvroTest {
   public void testTopologyAvro_statelessProcessors() throws IOException, RestClientException {
 
     /** Arrange */
-    // register schema in mock schema-registry
-    schemaRegistryClient.register(
-        new TopicNameStrategy().subjectName(topicIn, false, Person.SCHEMA$), Person.SCHEMA$);
+    // register schema in mock schema-registry -> not necessary
+    //schemaRegistryClient.register(
+    //    new TopicNameStrategy().subjectName(topicIn, false, Person.SCHEMA$), Person.SCHEMA$);
     // create serde with config to be able to connect to mock schema registry
     // https://github.com/confluentinc/schema-registry/issues/877
     // Passing Schema Registry URL twice to instantiate KafkaAvroSerializer or Serde
@@ -115,9 +115,9 @@ public class StreamProcessingAvroTest {
   public void testTopologyAvro_statefulProcessors() throws IOException, RestClientException {
     /** Arrange */
     final String storeName = "same-name";
-    // register schema in mock schema-registry
-    schemaRegistryClient.register(
-        new TopicNameStrategy().subjectName(topicIn, false, Person.SCHEMA$), Person.SCHEMA$);
+    // register schema in mock schema-registry -> Not - necessary
+    //schemaRegistryClient.register(
+    //    new TopicNameStrategy().subjectName(topicIn, false, Person.SCHEMA$), Person.SCHEMA$);
     // create serde with config to be able to connect to mock schema registry
     final SpecificAvroSerde<Person> serde = new SpecificAvroSerde<>(schemaRegistryClient);
 
