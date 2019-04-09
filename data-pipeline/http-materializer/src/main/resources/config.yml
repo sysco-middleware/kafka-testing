@@ -13,3 +13,6 @@ kafka:
   bootstrapServers: ${KAFKA_BOOTSTRAP_SERVERS:-127.0.0.1:29092}
   schemaRegistryUrl: ${SCHEMA_REGISTRY_URL:-http://127.0.0.1:8081}
   sourceTopic: ${SOURCE_TOPIC:-events-message-v1}
+
+databaseRestService:
+  url: ${DATABASE_REST_SERVICE_URL:-http://127.0.0.1:3000/messages}

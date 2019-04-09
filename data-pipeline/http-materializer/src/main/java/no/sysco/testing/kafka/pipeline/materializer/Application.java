@@ -10,6 +10,7 @@ import no.sysco.testing.kafka.pipeline.materializer.domain.MessageRepresentation
 import no.sysco.testing.kafka.pipeline.materializer.infrastructure.kafka.KafkaMessageMaterializer;
 import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebService;
 import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebServiceInMemmory;
+import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebServiceRest;
 
 public class Application extends io.dropwizard.Application<ApplicationConfig> {
 
@@ -32,7 +33,8 @@ public class Application extends io.dropwizard.Application<ApplicationConfig> {
     log.info("Configuration:\n "+ applicationConfig);
     environment.healthChecks().register(applicationConfig.getName()+"HealthCheck", new ApplicationHealthCheck());
 
-    final DatabaseWebService dbWebService = new DatabaseWebServiceInMemmory();
+    //final DatabaseWebService dbWebService = new DatabaseWebServiceInMemmory();
+    final DatabaseWebService dbWebService = new DatabaseWebServiceRest(applicationConfig);
     final MessageRepresentationTransformer transformer = new MessageRepresentationTransformer();
     final KafkaMessageMaterializer kafkaMessageMaterializer = new KafkaMessageMaterializer(
         applicationConfig,

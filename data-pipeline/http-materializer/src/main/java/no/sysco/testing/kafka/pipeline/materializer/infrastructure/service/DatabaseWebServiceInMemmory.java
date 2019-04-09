@@ -15,5 +15,5 @@ public class DatabaseWebServiceInMemmory implements DatabaseWebService {
     messages.add(message);
     log.info("Message added:" +message);
   }
-  public List<MessageJsonRepresentation> getMessages() { return messages; }
+  @Override public List<MessageJsonRepresentation> getMessages() { return messages; }
 }
