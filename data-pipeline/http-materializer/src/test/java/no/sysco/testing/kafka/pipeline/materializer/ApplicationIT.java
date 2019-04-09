@@ -12,18 +12,19 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 import static org.junit.Assert.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-public class ApplicationIT { //extends WireMockTestBase {
+public class ApplicationIT {
 
   @ClassRule
   public static final EmbeddedSingleNodeKafkaCluster CLUSTER = new EmbeddedSingleNodeKafkaCluster();
 
   @Rule
-  public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort().dynamicHttpsPort());
+  public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
   private static final String topic = "topic";
 
   @Test
-  public void ttt() {
-
+  public void testApplication_3Msg_success() {
+    //new MaterializerConfig();
+    //MaterializerApplication.run();
   }
 
 }
