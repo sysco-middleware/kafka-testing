@@ -12,26 +12,38 @@ import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.Datab
 public class MaterializerApplication {
   private static Logger log = Logger.getLogger(MaterializerApplication.class.getName());
 
-  public static void main(String[] args) {
-    // typesafe conf load
-    final Config config = ConfigFactory.load();
-    final MaterializerConfig materializerConfig = MaterializerConfig.loadConfig(config);
-    run(materializerConfig, false);
-  }
+  private final DatabaseWebService dbWebService;
+  private final MessageRepresentationTransformer transformer;
+  private final KafkaMessageMaterializer kafkaMessageMaterializer;
 
-  public static void run(MaterializerConfig materializerConfig, boolean inMemory) {
-    final DatabaseWebService dbWebService = inMemory
+  public MaterializerApplication(MaterializerConfig materializerConfig, boolean inMemory) {
+    this.dbWebService = inMemory
         ? new DatabaseWebServiceInMemmory()
         : new DatabaseWebServiceRest(materializerConfig);
-
-    final MessageRepresentationTransformer transformer = new MessageRepresentationTransformer();
-    final KafkaMessageMaterializer kafkaMessageMaterializer = new KafkaMessageMaterializer(
+    this.transformer = new MessageRepresentationTransformer();
+    this.kafkaMessageMaterializer = new KafkaMessageMaterializer(
         materializerConfig,
         dbWebService,
         transformer
     );
+  }
 
+  public void stop() { kafkaMessageMaterializer.stop(); }
+  public void start() {
     kafkaMessageMaterializer.run();
     Runtime.getRuntime().addShutdownHook(new Thread(kafkaMessageMaterializer::stop));
   }
+
+  public static void main(String[] args) {
+    // typesafe conf load
+    final Config config = ConfigFactory.load();
+    final MaterializerConfig materializerConfig = MaterializerConfig.loadConfig(config);
+
+    final MaterializerApplication materializerApplication =
+        new MaterializerApplication(materializerConfig, false);
+
+    materializerApplication.start();
+  }
+
+
 }
