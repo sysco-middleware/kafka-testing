@@ -43,6 +43,7 @@
     <dependency>
       <groupId>no.sysco.testing</groupId>
       <artifactId>embedded-cluster</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
