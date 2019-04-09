@@ -54,15 +54,16 @@
           <goal>register</goal>
         </goals>
         <!-- exec on project build -->
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>test-compatibility</goal>
-              <goal>register</goal>
-            </goals>
-          </execution>
-        </executions>
+        <!--TODO: move to profile -->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <phase>verify</phase>-->
+<!--            <goals>-->
+<!--              <goal>test-compatibility</goal>-->
+<!--              <goal>register</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
       </plugin>
     </plugins>
   </build>
