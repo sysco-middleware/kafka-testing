@@ -10,7 +10,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import no.sysco.testing.kafka.pipeline.materializer.ApplicationConfig;
+import no.sysco.testing.kafka.pipeline.materializer.MaterializerConfig;
 import no.sysco.testing.kafka.pipeline.materializer.domain.MessageJsonRepresentation;
 
 
@@ -19,8 +19,8 @@ public class DatabaseWebServiceRest implements DatabaseWebService {
   private final String url;
   private final Client client;
 
-  public DatabaseWebServiceRest(final ApplicationConfig applicationConfig) {
-    this.url = applicationConfig.getDatabaseRestServiceFactory().getUrl();
+  public DatabaseWebServiceRest(final MaterializerConfig applicationConfig) {
+    this.url = applicationConfig.databaseRestServiceConfig.url;
     this.client = ClientBuilder.newClient();
   }
 
