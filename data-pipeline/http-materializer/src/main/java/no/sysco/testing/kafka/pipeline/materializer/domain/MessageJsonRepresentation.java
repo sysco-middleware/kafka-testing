@@ -35,4 +35,14 @@ public class MessageJsonRepresentation {
         ", text='" + text + '\'' +
         '}';
   }
+
+  public String json() {
+    return
+        "{" +
+          "\"id\":" + "\"" + id + "\"," +
+          "\"from\":" + "\"" + from + "\"," +
+          "\"to\":" + "\"" + to + "\"," +
+          "\"text\":" + "\"" + text + "\""
+        +"}";
+  }
 }

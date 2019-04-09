@@ -17,26 +17,27 @@
       <groupId>no.sysco.testing</groupId>
       <artifactId>schema</artifactId>
     </dependency>
+
+    <!--  todo: add logger slf4j  -->
+
+    <!-- rest client -->
     <dependency>
-      <groupId>io.dropwizard</groupId>
-      <artifactId>dropwizard-core</artifactId>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>3.14.0</version>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.apache.kafka</groupId>-->
-      <!--<artifactId>kafka-clients</artifactId>-->
-    <!--</dependency>-->
+
+
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-streams</artifactId>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>io.confluent</groupId>-->
-      <!--<artifactId>kafka-avro-serializer</artifactId>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>io.confluent</groupId>
       <artifactId>kafka-streams-avro-serde</artifactId>
     </dependency>
+
+    <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -47,6 +48,7 @@
       <artifactId>embedded-cluster</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock-jre8</artifactId>
