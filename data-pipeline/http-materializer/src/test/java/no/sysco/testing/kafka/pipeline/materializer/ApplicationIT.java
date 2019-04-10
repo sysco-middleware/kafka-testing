@@ -6,9 +6,9 @@ import java.util.concurrent.TimeUnit;
 import no.sysco.testing.kafka.embedded.EmbeddedSingleNodeKafkaCluster;
 import no.sysco.testing.kafka.pipeline.avro.Message;
 import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebService;
-import okhttp3.MediaType;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.streams.KafkaStreams;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -35,7 +35,7 @@ public class ApplicationIT {
   }
 
   @Test
-  public void testApplication_InMemory_3Msg_success()
+  public void send_InMemory_3Msg_success()
       throws ExecutionException, InterruptedException {
 
     String topic = "topic1";
@@ -54,7 +54,7 @@ public class ApplicationIT {
     final MaterializerApplication materializerApplication =
         new MaterializerApplication(testConfig, true);
 
-      // send 3 records
+    // send 3 records
     final KafkaProducer<String, Message> messageProducer =
         TestUtils.getMessageProducer(kafkaConfig);
     for (int i = 1; i<4; i++) {
@@ -76,12 +76,12 @@ public class ApplicationIT {
     await().atMost(15, TimeUnit.SECONDS)
         .until(() -> dbWebService.getMessages().size() == 3);
 
-    // stop stream app
+      // stop stream app
     materializerApplication.stop();
   }
 
   @Test
-  public void testApplication_3Msg_success() throws ExecutionException, InterruptedException {
+  public void send_3Msg_success() throws ExecutionException, InterruptedException {
     String topic = "topic2";
     CLUSTER.createTopic(topic);
 
@@ -108,7 +108,7 @@ public class ApplicationIT {
             .withStatus(201)
             .withHeader("Content-Type", JSON)));
 
-    // send 3 records
+      // send 3 records
     final KafkaProducer<String, Message> messageProducer =
         TestUtils.getMessageProducer(kafkaConfig);
     for (int i = 1; i<4; i++) {
@@ -123,9 +123,84 @@ public class ApplicationIT {
 
     // Assert
     await().atMost(15, TimeUnit.SECONDS).untilAsserted(()->
-      // and verify 3 request happen
-      verify(3, postRequestedFor(urlEqualTo("/messages")))
+        // verify 3 POST requests happen
+        verify(3, postRequestedFor(urlEqualTo("/messages")))
     );
+
+    materializerApplication.stop();
+  }
+
+  @Test
+  public void send_1Msg_3times_failAfter_2nd() throws ExecutionException, InterruptedException {
+    String topic = "topic3";
+    CLUSTER.createTopic(topic);
+
+    // Arrange
+      // config
+    final String baseUrl = wireMockRule.baseUrl();
+    final String dbRestServiceUrl = baseUrl+"/messages";
+    final MaterializerConfig.KafkaConfig kafkaConfig =
+        new MaterializerConfig.KafkaConfig(CLUSTER.bootstrapServers(), CLUSTER.schemaRegistryUrl(),
+            topic);
+    final MaterializerConfig.DatabaseRestServiceConfig dbRestServiceConfig =
+        new MaterializerConfig.DatabaseRestServiceConfig(dbRestServiceUrl);
+    final MaterializerConfig testConfig =
+        new MaterializerConfig("test", kafkaConfig, dbRestServiceConfig);
+
+    final MaterializerApplication materializerApplication =
+        new MaterializerApplication(testConfig, false);
+
+      // start app
+    materializerApplication.start();
+    final KafkaStreams.State runningState =
+        materializerApplication.getKafkaMessageMaterializer().getState();
+
+    assertTrue(runningState.isRunning());
+
+      // init producer
+    final KafkaProducer<String, Message> messageProducer =
+        TestUtils.getMessageProducer(kafkaConfig);
+    final Message msg =
+        Message.newBuilder().setId("id-1").setFrom("from-1").setTo("to-1").setText("text-1").build();
+
+      // wiremock stub
+    stubFor(post(urlEqualTo("/messages"))
+        .willReturn(aResponse()
+            .withStatus(201)
+            .withHeader("Content-Type", JSON)));
+      // send record
+    messageProducer.send(new ProducerRecord<>(topic, msg.getId(), msg)).get(); // blocking
+
+    await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(()->
+          verify(1, postRequestedFor(urlEqualTo("/messages")))
+    );
+
+    stubFor(post(urlEqualTo("/messages"))
+        .willReturn(aResponse()
+            // conflict, entity with id already exist
+            .withStatus(409)
+            .withHeader("Content-Type", JSON)));
+
+      // send record again 2nd time
+    messageProducer.send(new ProducerRecord<>(topic, msg.getId(), msg)).get(); // blocking
+      // send record again 3rd time
+    messageProducer.send(new ProducerRecord<>(topic, msg.getId(), msg)).get();
+
+    await()
+        .atMost(15, TimeUnit.SECONDS)
+        // ignore exceptions, otherwise test will fail
+        .ignoreExceptions()
+        .untilAsserted(()-> {
+              System.out.println("STATE: "+materializerApplication.getKafkaMessageMaterializer().getState().isRunning());
+              // assert that streams is not running due to exception
+              assertFalse(materializerApplication.getKafkaMessageMaterializer().getState().isRunning());
+            }
+        );
+
+      // 3 msg produced but stream failed and stopped after 2nd msg was processed -> only 2 request were made
+    verify(2, postRequestedFor(urlEqualTo("/messages")));
 
     materializerApplication.stop();
   }

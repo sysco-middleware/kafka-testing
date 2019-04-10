@@ -73,4 +73,8 @@ public class KafkaMessageMaterializer implements Runnable {
     kafkaStreams.start();
   }
   public void stop() { Optional.ofNullable(kafkaStreams).ifPresent(KafkaStreams::close); }
+
+  public KafkaStreams.State getState() {
+    return kafkaStreams.state();
+  }
 }

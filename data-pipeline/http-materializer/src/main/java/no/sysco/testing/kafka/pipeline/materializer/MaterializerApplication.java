@@ -36,6 +36,7 @@ public class MaterializerApplication {
 
   // for test
   DatabaseWebService getDbWebService() { return dbWebService; }
+  KafkaMessageMaterializer getKafkaMessageMaterializer() { return kafkaMessageMaterializer; }
 
   public static void main(String[] args) {
     // typesafe conf load
