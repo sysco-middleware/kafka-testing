@@ -38,7 +38,7 @@ public class KafkaMessageMaterializer implements Runnable {
     this.transformer = transformer;
     this.sourceTopic = config.kafkaConfig.sourceTopic;
 
-    Properties properties = new Properties();
+    final Properties properties = new Properties();
     properties.put(StreamsConfig.APPLICATION_ID_CONFIG, config.name+"steam-processing-v1");
     properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, config.kafkaConfig.bootstrapServers);
     properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, config.kafkaConfig.schemaRegistryUrl);
@@ -69,11 +69,8 @@ public class KafkaMessageMaterializer implements Runnable {
     return builder.build();
   }
 
-  @Override public void run() {
-    kafkaStreams.start();
-  }
+  @Override public void run() { kafkaStreams.start(); }
   public void stop() { Optional.ofNullable(kafkaStreams).ifPresent(KafkaStreams::close); }
-
   public KafkaStreams.State getState() {
     return kafkaStreams.state();
   }

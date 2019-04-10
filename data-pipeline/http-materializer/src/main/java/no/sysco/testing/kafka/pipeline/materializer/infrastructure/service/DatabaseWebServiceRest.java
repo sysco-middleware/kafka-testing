@@ -11,7 +11,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-// todo: proper logging
 public class DatabaseWebServiceRest implements DatabaseWebService {
    private static final Logger log = Logger.getLogger(DatabaseWebServiceRest.class.getName());
    private final String url;
@@ -26,7 +25,7 @@ public class DatabaseWebServiceRest implements DatabaseWebService {
 
    @Override public void saveMessage(final MessageJsonRepresentation message) {
      RequestBody body = RequestBody.create(JSON, message.json());
-    Request request =
+     Request request =
         new Request.Builder()
             .addHeader("Accept", "application/json; charset=utf-8")
             .addHeader("Content-Type", "application/json; charset=utf-8")
@@ -41,7 +40,6 @@ public class DatabaseWebServiceRest implements DatabaseWebService {
          log.severe("Request failed with status code: " +statusCode);
          throw new RuntimeException("Request failed with status "+ statusCode);
        }
-
        log.info("Response received successfully: " + statusCode);
      } catch (IOException e) {
        e.printStackTrace();

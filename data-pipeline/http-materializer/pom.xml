@@ -12,11 +12,13 @@
   <artifactId>http-materializer</artifactId>
 
   <dependencies>
+
     <!-- generated avro schema -->
     <dependency>
       <groupId>no.sysco.testing</groupId>
       <artifactId>schema</artifactId>
     </dependency>
+
     <!-- config -->
     <dependency>
       <groupId>com.typesafe</groupId>
@@ -30,7 +32,7 @@
       <version>3.14.0</version>
     </dependency>
 
-
+    <!-- kafka dependencies -->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-streams</artifactId>
@@ -62,10 +64,10 @@
       <artifactId>slf4j-api</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
       <artifactId>wiremock-jre8</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.awaitility</groupId>
