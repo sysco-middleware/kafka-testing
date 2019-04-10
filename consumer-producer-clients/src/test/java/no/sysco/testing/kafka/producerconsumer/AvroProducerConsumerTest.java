@@ -1,9 +1,10 @@
 package no.sysco.testing.kafka.producerconsumer;
 
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.UUID;
@@ -27,6 +28,8 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -34,24 +37,10 @@ public class AvroProducerConsumerTest {
 
   @ClassRule
   public static final EmbeddedSingleNodeKafkaCluster CLUSTER = new EmbeddedSingleNodeKafkaCluster();
-
   private static final String topic = "topic";
 
   @BeforeClass
-  public static void createTopics() throws Exception {
-    // CLUSTER.start();
-    CLUSTER.createTopic(topic);
-  }
-
-  @Before
-  public void setup() {
-    // start streams
-  }
-
-  @After
-  public void closeStreams() {
-    // close streams
-  }
+  public static void createTopics() { CLUSTER.createTopic(topic); }
 
   @Test
   public void clusterIsRunning() {
@@ -59,8 +48,8 @@ public class AvroProducerConsumerTest {
   }
 
   @Test
-  public void testProducer()
-      throws IOException, InterruptedException, ExecutionException, TimeoutException {
+  public void testAvroProducer()
+      throws InterruptedException, ExecutionException, TimeoutException {
 
     final KafkaProducer<String, Event> producer = new KafkaProducer<>(getProducerProperties());
     // async with callback
@@ -83,29 +72,31 @@ public class AvroProducerConsumerTest {
   }
 
   @Test
-  public void testSimpleConsumer()
+  public void testAvroSimpleConsumer()
       throws InterruptedException, ExecutionException, TimeoutException {
 
     final KafkaProducer<String, Event> producer = new KafkaProducer<>(getProducerProperties());
-    final RecordMetadata recordMetadata =
-        producer.send( new ProducerRecord<>(topic, "id-3", Event.newBuilder().setId("id-3").setType("type-3").setContext("context-3").build())).get(1, TimeUnit.SECONDS);
+    producer.send(new ProducerRecord<>(
+        topic,
+        "id-3",
+        Event.newBuilder()
+            .setId("id-3")
+            .setType("type-3")
+            .setContext("context-3")
+            .build()))
+        .get(1, TimeUnit.SECONDS);
 
-    int acc = 0;
-    boolean matched = false;
     final KafkaConsumer<String, Event> consumer = new KafkaConsumer<>(getConsumerProperties());
     consumer.subscribe(Collections.singletonList(topic));
 
-    while (acc < 3) {
-      final ConsumerRecords<String, Event> records = consumer.poll(Duration.ofSeconds(1));
-      for (final ConsumerRecord<String, Event> record : records) {
-        if ("id-3".equals(record.key())) matched = true;
-      }
-      // todo: remove crutch ~> use awaitility lib
-      acc++;
-      Thread.sleep(1000);
-    }
+    final ArrayList<Event> events = new ArrayList<>();
 
-    assertTrue(matched);
+    await().atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(()->{
+          final ConsumerRecords<String, Event> records = consumer.poll(Duration.ofSeconds(1));
+          for (final ConsumerRecord<String, Event> record : records) events.add(record.value());
+          assertEquals(1, events.size());
+        });
   }
 
   private Properties getProducerProperties() {
@@ -113,18 +104,9 @@ public class AvroProducerConsumerTest {
     properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, CLUSTER.bootstrapServers());
     properties.put(ProducerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString());
     properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
-    // wait for acks from all brokers, when replicated [-1, 0, 1]
     properties.put(ProducerConfig.ACKS_CONFIG, "all");
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-    // properties.put(ProducerConfig.RETRIES_CONFIG, 0);
-    // tune (increase) throughput
-    // properties.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
-    // properties.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-    // be sure to use `http://`
-    // properties.put(
-    //    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
     return properties;
   }
 
@@ -134,12 +116,9 @@ public class AvroProducerConsumerTest {
     properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "client0");
     properties.put(ConsumerConfig.GROUP_ID_CONFIG, "group0");
     properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
     properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
-    // be sure to use `http://`
-    // properties.put(
-    //    AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
     return properties;
   }
 }

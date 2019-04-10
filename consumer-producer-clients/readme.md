@@ -9,7 +9,7 @@ Example: [processing.guarantee:exactly_once](https://kafka.apache.org/22/documen
 Module contains examples of testing Kafka Consumer/Producer APIs with: 
 - [X] embedded kafka + producer/consumer
 - [X] embedded kafka + producer/consumer + avro
-- [ ] clean test + DRY
+- [X] cleanup test
 
 ## Related Issues
 * [issue-#26](https://github.com/confluentinc/kafka-streams-examples/issues/26)
