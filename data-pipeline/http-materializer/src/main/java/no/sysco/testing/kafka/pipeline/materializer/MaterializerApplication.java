@@ -34,6 +34,9 @@ public class MaterializerApplication {
     Runtime.getRuntime().addShutdownHook(new Thread(kafkaMessageMaterializer::stop));
   }
 
+  // for test
+  DatabaseWebService getDbWebService() { return dbWebService; }
+
   public static void main(String[] args) {
     // typesafe conf load
     final Config config = ConfigFactory.load();

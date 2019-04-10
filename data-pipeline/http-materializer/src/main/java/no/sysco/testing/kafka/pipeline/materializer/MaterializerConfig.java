@@ -50,7 +50,7 @@ public class MaterializerConfig {
     public final String bootstrapServers;
     public final String schemaRegistryUrl;
     public final String sourceTopic;
-    private KafkaConfig(String bootstrapServers, String schemaRegistryUrl, String sourceTopic) {
+    KafkaConfig(String bootstrapServers, String schemaRegistryUrl, String sourceTopic) {
       this.bootstrapServers = bootstrapServers;
       this.schemaRegistryUrl = schemaRegistryUrl;
       this.sourceTopic = sourceTopic;
@@ -67,7 +67,7 @@ public class MaterializerConfig {
 
   public static final class DatabaseRestServiceConfig {
     public final String url;
-    private DatabaseRestServiceConfig(String url) { this.url = url; }
+    DatabaseRestServiceConfig(String url) { this.url = url; }
 
     @Override public String toString() {
       return "DatabaseRestServiceConfig{" +
