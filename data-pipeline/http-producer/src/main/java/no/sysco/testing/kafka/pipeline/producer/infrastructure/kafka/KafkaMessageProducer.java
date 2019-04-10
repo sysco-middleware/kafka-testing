@@ -1,13 +1,11 @@
 package no.sysco.testing.kafka.pipeline.producer.infrastructure.kafka;
 
-import io.confluent.kafka.serializers.AbstractKafkaAvroDeserializer;
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDe;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import no.sysco.testing.kafka.pipeline.avro.Message;
-import no.sysco.testing.kafka.pipeline.producer.ApplicationConfig;
+import no.sysco.testing.kafka.pipeline.producer.ProducerRestConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import java.util.logging.Logger;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -20,18 +18,18 @@ public class KafkaMessageProducer {
   private static final Logger log = Logger.getLogger(KafkaMessageProducer.class.getName());
   private final String sinkTopic;
 
-  public KafkaMessageProducer(final ApplicationConfig applicationConfig) {
+  public KafkaMessageProducer(final ProducerRestConfig producerRestConfig) {
     Properties props = new Properties();
-    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, applicationConfig.getKafkaClientFactory().getBootstrapServers());
-    props.put(ProducerConfig.CLIENT_ID_CONFIG, applicationConfig.getName() + "-producer-id1");
+    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, producerRestConfig.getKafkaClientFactory().getBootstrapServers());
+    props.put(ProducerConfig.CLIENT_ID_CONFIG, producerRestConfig.getName() + "-producer-id1");
     props.put(ProducerConfig.ACKS_CONFIG, "all");
     props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
     //props.put(ProducerConfig.RETRIES_CONFIG, 0);
     //props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
     //props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-    props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, applicationConfig.getKafkaClientFactory().getSchemaRegistryUrl());
-    this.sinkTopic = applicationConfig.getKafkaClientFactory().getSinkTopic();
+    props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, producerRestConfig.getKafkaClientFactory().getSchemaRegistryUrl());
+    this.sinkTopic = producerRestConfig.getKafkaClientFactory().getSinkTopic();
     this.producer = new KafkaProducer<>(props);
   }
 

@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import no.sysco.testing.kafka.pipeline.producer.domain.MessageJsonRepresentation;
 import no.sysco.testing.kafka.pipeline.producer.domain.MessageRepresentationTransformer;
 import no.sysco.testing.kafka.pipeline.producer.infrastructure.kafka.KafkaMessageProducer;
+import org.apache.avro.AvroRuntimeException;
 
 @Path("messages")
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,7 +33,12 @@ public class MessageResources {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response produceAsync(final MessageJsonRepresentation messageJsonRepresentation) {
-    messageProducer.producerMessage(transformer.transform(messageJsonRepresentation));
-    return Response.accepted().build();
+    try {
+      messageProducer.producerMessage(transformer.transform(messageJsonRepresentation));
+      return Response.accepted().build();
+    } catch (AvroRuntimeException exception) {
+      return Response.status(400).entity(exception.toString()).build();
+    }
+
   }
 }

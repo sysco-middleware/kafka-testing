@@ -5,21 +5,21 @@ import io.dropwizard.Configuration;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-public class ApplicationConfig extends Configuration {
+public class ProducerRestConfig extends Configuration {
 
   @Valid @JsonProperty("name") private String name;
   @Valid @JsonProperty("kafka") private KafkaClientFactory kafkaClientFactory;
 
-  public ApplicationConfig(String name, KafkaClientFactory kafkaClientFactory) {
+  public ProducerRestConfig(String name, KafkaClientFactory kafkaClientFactory) {
     this.name = name;
     this.kafkaClientFactory = kafkaClientFactory;
   }
-  public ApplicationConfig() { }
+  public ProducerRestConfig() { }
 
   public String getName() { return name; }
   public KafkaClientFactory getKafkaClientFactory() { return kafkaClientFactory; }
   @Override public String toString() {
-    return "ApplicationConfig{" +
+    return "ProducerRestConfig{" +
         "name='" + name + '\'' +
         ", kafkaClientFactory=" + kafkaClientFactory +
         '}';
