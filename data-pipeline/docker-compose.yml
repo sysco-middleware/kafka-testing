@@ -1,5 +1,40 @@
 version: '3'
 services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.1.2
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka:
+    image: confluentinc/cp-kafka:5.1.2
+    ports:
+      - 9092:9092
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    depends_on:
+      - zookeeper
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.1.2
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: localhost
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+    depends_on:
+      - kafka
+
+#  DATA PIPELINE SERVICES
+
   # https://github.com/clue/docker-json-server
   db-mock:
     image: zhenik/json-server
@@ -9,3 +44,12 @@ services:
       - "3000:80"
     volumes:
       - ./database.json:/data/db.json
+
+  http-producer:
+    image: zhenik/http-producer
+    build: http-producer
+
+  http-materializer:
+    image: zhenik/http-materializer
+    build: http-materializer
+
