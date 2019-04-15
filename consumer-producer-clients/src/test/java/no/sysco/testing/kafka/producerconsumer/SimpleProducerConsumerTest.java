@@ -19,7 +19,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -32,12 +31,6 @@ public class SimpleProducerConsumerTest {
 
   @ClassRule
   public static final EmbeddedSingleNodeKafkaCluster CLUSTER = new EmbeddedSingleNodeKafkaCluster();
-  private static final String topic = "topic";
-
-  @BeforeClass
-  public static void createTopics() {
-    CLUSTER.createTopic(topic);
-  }
 
   @Test
   public void clusterIsRunning() {
@@ -47,6 +40,9 @@ public class SimpleProducerConsumerTest {
   @Test
   public void testSimpleProducer()
       throws InterruptedException, ExecutionException, TimeoutException {
+    String topic = "topic1";
+    CLUSTER.createTopic(topic);
+
     final KafkaProducer<String, String> producer = new KafkaProducer<>(getProducerProperties());
 
     // async with callback
@@ -68,6 +64,9 @@ public class SimpleProducerConsumerTest {
   public void testSimpleConsumer()
       throws InterruptedException, ExecutionException, TimeoutException {
 
+    String topic = "topic2";
+    CLUSTER.createTopic(topic);
+
     final KafkaProducer<String, String> producer = new KafkaProducer<>(getProducerProperties());
     producer.send(new ProducerRecord<>(topic, "k3", "v3")).get(1, TimeUnit.SECONDS);
 
@@ -75,12 +74,15 @@ public class SimpleProducerConsumerTest {
     consumer.subscribe(Collections.singletonList(topic));
 
     final ArrayList<String> values = new ArrayList<>();
-    await().atMost(15, TimeUnit.SECONDS)
-        .untilAsserted(()->{
-          final ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
-          for (final ConsumerRecord<String, String> record : records) values.add(record.value());
-          assertEquals(1, values.size());
-        });
+    await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              final ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
+              for (final ConsumerRecord<String, String> record : records)
+                values.add(record.value());
+              assertEquals(1, values.size());
+            });
   }
 
   private Properties getProducerProperties() {

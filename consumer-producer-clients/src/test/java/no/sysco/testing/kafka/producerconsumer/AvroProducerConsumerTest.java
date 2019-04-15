@@ -22,9 +22,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -37,10 +34,6 @@ public class AvroProducerConsumerTest {
 
   @ClassRule
   public static final EmbeddedSingleNodeKafkaCluster CLUSTER = new EmbeddedSingleNodeKafkaCluster();
-  private static final String topic = "topic";
-
-  @BeforeClass
-  public static void createTopics() { CLUSTER.createTopic(topic); }
 
   @Test
   public void clusterIsRunning() {
@@ -48,13 +41,18 @@ public class AvroProducerConsumerTest {
   }
 
   @Test
-  public void testAvroProducer()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  public void testAvroProducer() throws InterruptedException, ExecutionException, TimeoutException {
+
+    String topic = "topic1";
+    CLUSTER.createTopic(topic);
 
     final KafkaProducer<String, Event> producer = new KafkaProducer<>(getProducerProperties());
     // async with callback
     producer.send(
-        new ProducerRecord<>(topic, "id-1", Event.newBuilder().setId("id-1").setType("type-1").setContext("context-1").build()),
+        new ProducerRecord<>(
+            topic,
+            "id-1",
+            Event.newBuilder().setId("id-1").setType("type-1").setContext("context-1").build()),
         ((metadata, exception) -> {
           if (exception == null) {
             System.out.println("SUCCESS bro");
@@ -65,25 +63,35 @@ public class AvroProducerConsumerTest {
 
     // sync
     final RecordMetadata recordMetadata =
-        producer.send( new ProducerRecord<>(topic, "id-2", Event.newBuilder().setId("id-2").setType("type-2").setContext("context-2").build())).get(3, TimeUnit.SECONDS);
+        producer
+            .send(
+                new ProducerRecord<>(
+                    topic,
+                    "id-2",
+                    Event.newBuilder()
+                        .setId("id-2")
+                        .setType("type-2")
+                        .setContext("context-2")
+                        .build()))
+            .get(3, TimeUnit.SECONDS);
 
     assertTrue(recordMetadata.hasOffset());
     assertTrue(recordMetadata.hasTimestamp());
   }
 
   @Test
-  public void testAvroSimpleConsumer()
-      throws InterruptedException, ExecutionException, TimeoutException {
+  public void testAvroConsumer() throws InterruptedException, ExecutionException, TimeoutException {
+
+    String topic = "topic2";
+    CLUSTER.createTopic(topic);
 
     final KafkaProducer<String, Event> producer = new KafkaProducer<>(getProducerProperties());
-    producer.send(new ProducerRecord<>(
-        topic,
-        "id-3",
-        Event.newBuilder()
-            .setId("id-3")
-            .setType("type-3")
-            .setContext("context-3")
-            .build()))
+    producer
+        .send(
+            new ProducerRecord<>(
+                topic,
+                "id-3",
+                Event.newBuilder().setId("id-3").setType("type-3").setContext("context-3").build()))
         .get(1, TimeUnit.SECONDS);
 
     final KafkaConsumer<String, Event> consumer = new KafkaConsumer<>(getConsumerProperties());
@@ -91,19 +99,22 @@ public class AvroProducerConsumerTest {
 
     final ArrayList<Event> events = new ArrayList<>();
 
-    await().atMost(15, TimeUnit.SECONDS)
-        .untilAsserted(()->{
-          final ConsumerRecords<String, Event> records = consumer.poll(Duration.ofSeconds(1));
-          for (final ConsumerRecord<String, Event> record : records) events.add(record.value());
-          assertEquals(1, events.size());
-        });
+    await()
+        .atMost(15, TimeUnit.SECONDS)
+        .untilAsserted(
+            () -> {
+              final ConsumerRecords<String, Event> records = consumer.poll(Duration.ofSeconds(1));
+              for (final ConsumerRecord<String, Event> record : records) events.add(record.value());
+              assertEquals(1, events.size());
+            });
   }
 
   private Properties getProducerProperties() {
     final Properties properties = new Properties();
     properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, CLUSTER.bootstrapServers());
     properties.put(ProducerConfig.CLIENT_ID_CONFIG, UUID.randomUUID().toString());
-    properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
+    properties.put(
+        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
     properties.put(ProducerConfig.ACKS_CONFIG, "all");
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
@@ -118,7 +129,8 @@ public class AvroProducerConsumerTest {
     properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
     properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-    properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
+    properties.put(
+        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
     return properties;
   }
 }
