@@ -53,16 +53,14 @@
       <artifactId>embedded-cluster</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- logger slf4j -> required for embedded kafka  -->
+    <!-- logger slf4j -> required for embedded kafka -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
