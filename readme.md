@@ -1,5 +1,8 @@
 # Kafka-clients: writing automated tests [WIP]
-
+Run all tests:
+```
+./mvnw clean install -DskipIntegrationTests=false
+```
 ## Test approaches
 1. [kafka-streams-test-utils](https://kafka.apache.org/21/documentation/streams/developer-guide/testing.html) 
 for `unit` testing Topologies in [streams-client module](./streams-client). 
@@ -9,7 +12,6 @@ Approach covers testing topologies (stateful & stateless processors) with differ
 4. [data-pipeline](./data-pipeline) different approaches how to make `end-to-end` tests.
 
 ### TODO:
-- plugin and profile to run integration tests `IT`
 - Makefile
 - update vers java  `8 -> 12`  `!NB`: Reflection use -> only java8 currently 
 - update vers junit `4 -> 5` 

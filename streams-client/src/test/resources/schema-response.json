@@ -1,6 +1,0 @@
-{
-  "subject": "topic-in-value",
-  "version": 1,
-  "id": 1,
-  "schema": "{\"type\":\"record\",\"name\":\"Person\",\"namespace\":\"no.sysco.testing.kafka.streams.avro\",\"fields\":[{\"name\":\"id\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"lastname\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}"
-}

@@ -2,9 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://maven.apache.org/POM/4.0.0"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>kafka</artifactId>
     <groupId>no.sysco.testing</groupId>
@@ -14,8 +12,7 @@
   <artifactId>consumer-producer-clients</artifactId>
 
   <dependencies>
-
-    <!-- avro -->
+    <!--avro-->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
@@ -24,7 +21,6 @@
       <groupId>io.confluent</groupId>
       <artifactId>kafka-avro-serializer</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -33,8 +29,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-
-    <!-- test dependencies -->
+    <!--test dependencies-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -50,8 +45,8 @@
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -69,6 +64,11 @@
           <sourceDirectory>${project.basedir}/src/main/resources/avro</sourceDirectory>
           <stringType>String</stringType>
         </configuration>
+      </plugin>
+      <!--integration tests-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

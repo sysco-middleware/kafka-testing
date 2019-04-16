@@ -2,19 +2,17 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://maven.apache.org/POM/4.0.0"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <artifactId>data-pipeline</artifactId>
     <groupId>no.sysco.testing</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
+  <artifactId>http-producer</artifactId>
 
   <properties>
     <dropwizard.core.version>1.3.3</dropwizard.core.version>
   </properties>
-  <artifactId>http-producer</artifactId>
 
   <dependencies>
     <!-- generated avro schema -->
@@ -22,7 +20,6 @@
       <groupId>no.sysco.testing</groupId>
       <artifactId>schema</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-core</artifactId>
@@ -82,7 +79,6 @@
             <goals>
               <goal>shade</goal>
             </goals>
-
             <configuration>
               <transformers>
                 <!-- add Main-Class to manifest file -->
@@ -97,6 +93,11 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <!--integration tests-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
