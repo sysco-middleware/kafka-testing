@@ -11,8 +11,10 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 public class TestUtils {
 
-  public static KafkaProducer<String, Message> getMessageProducer(MaterializerConfig.KafkaConfig kafkaConfig) {
-    return new KafkaProducer<>(getProperties(kafkaConfig.bootstrapServers, kafkaConfig.schemaRegistryUrl));
+  public static KafkaProducer<String, Message> getMessageProducer(
+      MaterializerConfig.KafkaConfig kafkaConfig) {
+    return new KafkaProducer<>(
+        getProperties(kafkaConfig.bootstrapServers, kafkaConfig.schemaRegistryUrl));
   }
 
   public static Properties getProperties(String bootstrapservers, String schemaUrl) {
@@ -25,5 +27,4 @@ public class TestUtils {
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
     return properties;
   }
-
 }

@@ -33,11 +33,11 @@ services:
     depends_on:
       - kafka
 
-#  DATA PIPELINE SERVICES
+  #  DATA PIPELINE SERVICES
 
   # https://github.com/clue/docker-json-server
   db-mock:
-    image: zhenik/json-server
+    image: zhenik/json-server:data-pipeline
     environment:
       ID_MAP: id
     ports:
@@ -46,7 +46,7 @@ services:
       - ./database.json:/data/db.json
 
   http-producer:
-    image: zhenik/http-producer
+    image: zhenik/http-producer:data-pipeline
     build: http-producer
     environment:
       APPLICATION_PORT: 8080
@@ -58,7 +58,7 @@ services:
       - "3001:8080"
 
   http-materializer:
-    image: zhenik/http-materializer
+    image: zhenik/http-materializer:data-pipeline
     build: http-materializer
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092

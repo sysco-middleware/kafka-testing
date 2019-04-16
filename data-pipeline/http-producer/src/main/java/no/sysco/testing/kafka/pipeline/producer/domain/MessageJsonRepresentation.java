@@ -10,7 +10,8 @@ public class MessageJsonRepresentation {
   private String to;
   private String text;
 
-  public MessageJsonRepresentation() { }
+  public MessageJsonRepresentation() {}
+
   public MessageJsonRepresentation(String id, String from, String to, String text) {
     this.id = id;
     this.from = from;
@@ -18,21 +19,53 @@ public class MessageJsonRepresentation {
     this.text = text;
   }
 
-  public String getId() { return id; }
-  public void setId(String id) { this.id = id; }
-  public String getFrom() { return from; }
-  public void setFrom(String from) { this.from = from; }
-  public String getTo() { return to; }
-  public void setTo(String to) { this.to = to; }
-  public String getText() { return text; }
-  public void setText(String text) { this.text = text; }
+  public String getId() {
+    return id;
+  }
 
-  @Override public String toString() {
-    return "MessageJsonRepresentation{" +
-        "id='" + id + '\'' +
-        ", from='" + from + '\'' +
-        ", to='" + to + '\'' +
-        ", text='" + text + '\'' +
-        '}';
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getFrom() {
+    return from;
+  }
+
+  public void setFrom(String from) {
+    this.from = from;
+  }
+
+  public String getTo() {
+    return to;
+  }
+
+  public void setTo(String to) {
+    this.to = to;
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
+
+  @Override
+  public String toString() {
+    return "MessageJsonRepresentation{"
+        + "id='"
+        + id
+        + '\''
+        + ", from='"
+        + from
+        + '\''
+        + ", to='"
+        + to
+        + '\''
+        + ", text='"
+        + text
+        + '\''
+        + '}';
   }
 }

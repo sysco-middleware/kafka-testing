@@ -8,9 +8,9 @@ Approach covers testing topologies (stateful & stateless processors) with differ
 3. [test-containers](https://github.com/testcontainers/testcontainers-java) for `IT` and `end-to-end` tests.
 4. [data-pipeline](./data-pipeline) different approaches how to make `end-to-end` tests.
 
-
-
 ### TODO:
+- plugin and profile to run integration tests `IT`
+- Makefile
 - update vers java  `8 -> 12`  `!NB`: Reflection use -> only java8 currently 
 - update vers junit `4 -> 5` 
 

@@ -21,14 +21,17 @@ public class ProducerRestApplication extends io.dropwizard.Application<ProducerR
   @Override
   public void initialize(Bootstrap<ProducerRestConfig> bootstrap) {
     bootstrap.setConfigurationSourceProvider(
-        new SubstitutingSourceProvider(bootstrap.getConfigurationSourceProvider(),
-            new EnvironmentVariableSubstitutor(false)));
+        new SubstitutingSourceProvider(
+            bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor(false)));
     super.initialize(bootstrap);
   }
 
-  @Override public void run(ProducerRestConfig producerRestConfig, Environment environment) {
-    log.info("Configuration:\n "+ producerRestConfig);
-    environment.healthChecks().register(producerRestConfig.getName()+"HealthCheck", new ApplicationHealthCheck());
+  @Override
+  public void run(ProducerRestConfig producerRestConfig, Environment environment) {
+    log.info("Configuration:\n " + producerRestConfig);
+    environment
+        .healthChecks()
+        .register(producerRestConfig.getName() + "HealthCheck", new ApplicationHealthCheck());
 
     KafkaMessageProducer messageProducer = new KafkaMessageProducer(producerRestConfig);
     MessageRepresentationTransformer transformer = new MessageRepresentationTransformer();
@@ -36,6 +39,5 @@ public class ProducerRestApplication extends io.dropwizard.Application<ProducerR
 
     // register REST endpoints
     environment.jersey().register(messageResources);
-
   }
 }

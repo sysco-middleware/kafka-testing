@@ -39,6 +39,5 @@ public class MessageResources {
     } catch (AvroRuntimeException exception) {
       return Response.status(400).entity(exception.toString()).build();
     }
-
   }
 }

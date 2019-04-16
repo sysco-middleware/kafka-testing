@@ -12,9 +12,7 @@ public class MaterializerConfig {
 
   // leave default, to make it testable
   MaterializerConfig(
-      String name,
-      KafkaConfig kafkaConfig,
-      DatabaseRestServiceConfig databaseRestServiceConfig) {
+      String name, KafkaConfig kafkaConfig, DatabaseRestServiceConfig databaseRestServiceConfig) {
     this.name = name;
     this.kafkaConfig = kafkaConfig;
     this.databaseRestServiceConfig = databaseRestServiceConfig;
@@ -29,50 +27,67 @@ public class MaterializerConfig {
 
     final String dbServiceUrl = config.getString("materializer.database-rest-service.url");
 
-    final MaterializerConfig materializerConfig = new MaterializerConfig(name,
-        new KafkaConfig(bootstrapServers, schemaRegistryUrl, sourceTopic),
-        new DatabaseRestServiceConfig(dbServiceUrl));
+    final MaterializerConfig materializerConfig =
+        new MaterializerConfig(
+            name,
+            new KafkaConfig(bootstrapServers, schemaRegistryUrl, sourceTopic),
+            new DatabaseRestServiceConfig(dbServiceUrl));
 
     log.info(materializerConfig.toString());
 
     return materializerConfig;
   }
 
-  @Override public String toString() {
-    return "MaterializerConfig{" +
-        "name='" + name + '\'' +
-        ", kafkaConfig=" + kafkaConfig +
-        ", databaseRestServiceConfig=" + databaseRestServiceConfig +
-        '}';
+  @Override
+  public String toString() {
+    return "MaterializerConfig{"
+        + "name='"
+        + name
+        + '\''
+        + ", kafkaConfig="
+        + kafkaConfig
+        + ", databaseRestServiceConfig="
+        + databaseRestServiceConfig
+        + '}';
   }
 
   public static final class KafkaConfig {
     public final String bootstrapServers;
     public final String schemaRegistryUrl;
     public final String sourceTopic;
+
     KafkaConfig(String bootstrapServers, String schemaRegistryUrl, String sourceTopic) {
       this.bootstrapServers = bootstrapServers;
       this.schemaRegistryUrl = schemaRegistryUrl;
       this.sourceTopic = sourceTopic;
     }
 
-    @Override public String toString() {
-      return "KafkaConfig{" +
-          "bootstrapServers='" + bootstrapServers + '\'' +
-          ", schemaRegistryUrl='" + schemaRegistryUrl + '\'' +
-          ", sourceTopic='" + sourceTopic + '\'' +
-          '}';
+    @Override
+    public String toString() {
+      return "KafkaConfig{"
+          + "bootstrapServers='"
+          + bootstrapServers
+          + '\''
+          + ", schemaRegistryUrl='"
+          + schemaRegistryUrl
+          + '\''
+          + ", sourceTopic='"
+          + sourceTopic
+          + '\''
+          + '}';
     }
   }
 
   public static final class DatabaseRestServiceConfig {
     public final String url;
-    DatabaseRestServiceConfig(String url) { this.url = url; }
 
-    @Override public String toString() {
-      return "DatabaseRestServiceConfig{" +
-          "url='" + url + '\'' +
-          '}';
+    DatabaseRestServiceConfig(String url) {
+      this.url = url;
+    }
+
+    @Override
+    public String toString() {
+      return "DatabaseRestServiceConfig{" + "url='" + url + '\'' + '}';
     }
   }
 }

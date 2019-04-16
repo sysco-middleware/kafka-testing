@@ -9,11 +9,18 @@ public class DatabaseWebServiceInMemmory implements DatabaseWebService {
   private static final Logger log = Logger.getLogger(DatabaseWebServiceInMemmory.class.getName());
   private List<MessageJsonRepresentation> messages;
 
-  public DatabaseWebServiceInMemmory() { this.messages = new ArrayList<>(); }
-
-  @Override public void saveMessage(MessageJsonRepresentation message) {
-    messages.add(message);
-    log.info("Message added:" +message);
+  public DatabaseWebServiceInMemmory() {
+    this.messages = new ArrayList<>();
   }
-  @Override public List<MessageJsonRepresentation> getMessages() { return messages; }
+
+  @Override
+  public void saveMessage(MessageJsonRepresentation message) {
+    messages.add(message);
+    log.info("Message added:" + message);
+  }
+
+  @Override
+  public List<MessageJsonRepresentation> getMessages() {
+    return messages;
+  }
 }

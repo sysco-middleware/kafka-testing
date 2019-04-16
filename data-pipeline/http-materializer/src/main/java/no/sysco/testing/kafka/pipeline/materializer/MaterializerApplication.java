@@ -17,26 +17,14 @@ public class MaterializerApplication {
   private final KafkaMessageMaterializer kafkaMessageMaterializer;
 
   public MaterializerApplication(MaterializerConfig materializerConfig, boolean inMemory) {
-    this.dbWebService = inMemory
-        ? new DatabaseWebServiceInMemmory()
-        : new DatabaseWebServiceRest(materializerConfig);
+    this.dbWebService =
+        inMemory
+            ? new DatabaseWebServiceInMemmory()
+            : new DatabaseWebServiceRest(materializerConfig);
     this.transformer = new MessageRepresentationTransformer();
-    this.kafkaMessageMaterializer = new KafkaMessageMaterializer(
-        materializerConfig,
-        dbWebService,
-        transformer
-    );
+    this.kafkaMessageMaterializer =
+        new KafkaMessageMaterializer(materializerConfig, dbWebService, transformer);
   }
-
-  public void stop() { kafkaMessageMaterializer.stop(); }
-  public void start() {
-    kafkaMessageMaterializer.run();
-    Runtime.getRuntime().addShutdownHook(new Thread(kafkaMessageMaterializer::stop));
-  }
-
-  // for test
-  DatabaseWebService getDbWebService() { return dbWebService; }
-  KafkaMessageMaterializer getKafkaMessageMaterializer() { return kafkaMessageMaterializer; }
 
   public static void main(String[] args) {
     // typesafe conf load
@@ -49,5 +37,21 @@ public class MaterializerApplication {
     materializerApplication.start();
   }
 
+  public void stop() {
+    kafkaMessageMaterializer.stop();
+  }
 
+  public void start() {
+    kafkaMessageMaterializer.run();
+    Runtime.getRuntime().addShutdownHook(new Thread(kafkaMessageMaterializer::stop));
+  }
+
+  // for test
+  DatabaseWebService getDbWebService() {
+    return dbWebService;
+  }
+
+  KafkaMessageMaterializer getKafkaMessageMaterializer() {
+    return kafkaMessageMaterializer;
+  }
 }

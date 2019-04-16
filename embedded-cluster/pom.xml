@@ -12,19 +12,15 @@
   <artifactId>embedded-cluster</artifactId>
 
   <dependencies>
-
-    <!-- avro -->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.confluent</groupId>
       <artifactId>kafka-avro-serializer</artifactId>
       <version>${confluent.platform.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -33,7 +29,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -48,14 +43,12 @@
       <groupId>org.apache.curator</groupId>
       <artifactId>curator-test</artifactId>
       <version>2.9.0</version>
-      <!--<scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka_2.11</artifactId>
       <classifier>test</classifier>
       <version>${kafka.apis.version}</version>
-      <!--<scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
@@ -67,7 +60,6 @@
       <groupId>io.confluent</groupId>
       <artifactId>kafka-schema-registry</artifactId>
       <version>${confluent.platform.version}</version>
-      <!--<scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>io.confluent</groupId>
@@ -75,10 +67,6 @@
       <version>${confluent.platform.version}</version>
       <!-- Required for e.g. schema registry's RestApp -->
       <classifier>tests</classifier>
-      <!--<scope>test</scope>-->
     </dependency>
-
-
-
   </dependencies>
 </project>

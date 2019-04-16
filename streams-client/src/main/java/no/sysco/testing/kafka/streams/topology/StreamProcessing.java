@@ -30,7 +30,8 @@ public class StreamProcessing {
   }
 
   // stateful
-  public static Topology topologyCountAnagram(final Tuple2<String, String> topics, final String storeName) {
+  public static Topology topologyCountAnagram(
+      final Tuple2<String, String> topics, final String storeName) {
     final StreamsBuilder streamsBuilder = new StreamsBuilder();
     final KStream<String, String> sourceStream =
         streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));

@@ -5,5 +5,6 @@ import no.sysco.testing.kafka.pipeline.materializer.domain.MessageJsonRepresenta
 
 public interface DatabaseWebService {
   void saveMessage(MessageJsonRepresentation message);
+
   List<MessageJsonRepresentation> getMessages();
 }

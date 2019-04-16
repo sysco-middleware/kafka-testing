@@ -1,7 +1,6 @@
 package no.sysco.testing.kafka.streams.topology;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import no.sysco.testing.kafka.streams.utils.Tuple2;

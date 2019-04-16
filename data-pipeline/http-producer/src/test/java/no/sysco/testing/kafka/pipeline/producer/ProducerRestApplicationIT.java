@@ -21,13 +21,12 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ProducerRestApplicationIT {
 
@@ -42,14 +41,12 @@ public class ProducerRestApplicationIT {
   @BeforeClass
   public static void beforeClass() {
     // init -> service is stateless
-    producerRestConfig = new ProducerRestConfig(
-        "test-config-1",
-        new ProducerRestConfig.KafkaClientFactory(CLUSTER.bootstrapServers(), CLUSTER.schemaRegistryUrl(), topic)
-    );
-    SUPPORT = new DropwizardTestSupport<>(
-        ProducerRestApplication.class,
-        producerRestConfig
-    );
+    producerRestConfig =
+        new ProducerRestConfig(
+            "test-config-1",
+            new ProducerRestConfig.KafkaClientFactory(
+                CLUSTER.bootstrapServers(), CLUSTER.schemaRegistryUrl(), topic));
+    SUPPORT = new DropwizardTestSupport<>(ProducerRestApplication.class, producerRestConfig);
     SUPPORT.before();
   }
 
@@ -60,18 +57,17 @@ public class ProducerRestApplicationIT {
     SUPPORT = null;
   }
 
-
   @Test
   public void sendPostRequest_msgProduced_success() {
     Client client = new JerseyClientBuilder().build();
 
-    Response response = client.target(
-        String.format("http://localhost:%d/messages", SUPPORT.getLocalPort()))
-        .request()
-        .post(Entity.json(new MessageJsonRepresentation("id-1", "from-1", "to-1", "text-1")));
+    Response response =
+        client
+            .target(String.format("http://localhost:%d/messages", SUPPORT.getLocalPort()))
+            .request()
+            .post(Entity.json(new MessageJsonRepresentation("id-1", "from-1", "to-1", "text-1")));
 
     assertEquals(202, response.getStatus());
-
 
     final KafkaConsumer<String, Message> consumer = new KafkaConsumer<>(getConsumerProperties());
     consumer.subscribe(Collections.singletonList(topic));
@@ -82,7 +78,8 @@ public class ProducerRestApplicationIT {
         .untilAsserted(
             () -> {
               final ConsumerRecords<String, Message> records = consumer.poll(Duration.ofSeconds(1));
-              for (final ConsumerRecord<String, Message> record : records) messages.add(record.value());
+              for (final ConsumerRecord<String, Message> record : records)
+                messages.add(record.value());
               assertEquals(1, messages.size());
             });
   }
@@ -91,11 +88,12 @@ public class ProducerRestApplicationIT {
   public void sendPostRequest_msgProduced_fail() {
     Client client = new JerseyClientBuilder().build();
 
-    Response response = client.target(
-        String.format("http://localhost:%d/messages", SUPPORT.getLocalPort()))
-        .request()
-        // cant construct avro record from this payload
-        .post(Entity.json(new MessageJsonRepresentation(null, null, "null", "")));
+    Response response =
+        client
+            .target(String.format("http://localhost:%d/messages", SUPPORT.getLocalPort()))
+            .request()
+            // cant construct avro record from this payload
+            .post(Entity.json(new MessageJsonRepresentation(null, null, "null", "")));
 
     // bad request
     assertEquals(400, response.getStatus());
@@ -116,12 +114,11 @@ public class ProducerRestApplicationIT {
             });
   }
 
-
-
   private Properties getConsumerProperties() {
     final Properties properties = new Properties();
     properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, CLUSTER.bootstrapServers());
-    properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
+    properties.put(
+        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
     properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "client-1");
     properties.put(ConsumerConfig.GROUP_ID_CONFIG, "gr-" + UUID.randomUUID().toString());
     properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
