@@ -39,7 +39,7 @@ services:
   db-mock:
     image: zhenik/json-server
     environment:
-      - ID_MAP=id
+      ID_MAP: id
     ports:
       - "3000:80"
     volumes:
@@ -48,8 +48,20 @@ services:
   http-producer:
     image: zhenik/http-producer
     build: http-producer
+    environment:
+      APPLICATION_PORT: 8080
+      ADMIN_PORT: 8081
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      SINK_TOPIC: events-message-v1
+    ports:
+      - "3001:8080"
 
   http-materializer:
     image: zhenik/http-materializer
     build: http-materializer
-
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      SOURCE_TOPIC: events-message-v1
+      DATABASE_REST_SERVICE_URL: http://db-mock/messages
