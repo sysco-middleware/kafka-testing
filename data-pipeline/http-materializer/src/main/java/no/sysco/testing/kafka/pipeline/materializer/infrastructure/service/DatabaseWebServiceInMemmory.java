@@ -2,11 +2,12 @@ package no.sysco.testing.kafka.pipeline.materializer.infrastructure.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import no.sysco.testing.kafka.pipeline.materializer.domain.MessageJsonRepresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DatabaseWebServiceInMemmory implements DatabaseWebService {
-  private static final Logger log = Logger.getLogger(DatabaseWebServiceInMemmory.class.getName());
+  private static final Logger log = LoggerFactory.getLogger(DatabaseWebServiceInMemmory.class.getName());
   private List<MessageJsonRepresentation> messages;
 
   public DatabaseWebServiceInMemmory() {

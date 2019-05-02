@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.Logger;
+
 import no.sysco.testing.kafka.pipeline.avro.Message;
 import no.sysco.testing.kafka.pipeline.materializer.MaterializerConfig;
 import no.sysco.testing.kafka.pipeline.materializer.domain.MessageRepresentationTransformer;
@@ -18,9 +18,11 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KafkaMessageMaterializer implements Runnable {
-  private static final Logger log = Logger.getLogger(KafkaMessageMaterializer.class.getName());
+  private static final Logger log = LoggerFactory.getLogger(KafkaMessageMaterializer.class.getName());
 
   private final MaterializerConfig config;
   private final String sourceTopic;
@@ -48,6 +50,7 @@ public class KafkaMessageMaterializer implements Runnable {
         StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
     properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
     this.kafkaStreams = new KafkaStreams(topology(), properties);
+    kafkaStreams.setUncaughtExceptionHandler((Thread t, Throwable e) -> log.error(e.getMessage()));
   }
 
   static Topology topology(

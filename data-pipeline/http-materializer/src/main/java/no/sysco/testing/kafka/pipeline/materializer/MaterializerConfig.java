@@ -1,10 +1,11 @@
 package no.sysco.testing.kafka.pipeline.materializer;
 
 import com.typesafe.config.Config;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MaterializerConfig {
-  private static Logger log = Logger.getLogger(MaterializerConfig.class.getName());
+  private static Logger log = LoggerFactory.getLogger(MaterializerConfig.class.getName());
 
   public final String name;
   public final KafkaConfig kafkaConfig;

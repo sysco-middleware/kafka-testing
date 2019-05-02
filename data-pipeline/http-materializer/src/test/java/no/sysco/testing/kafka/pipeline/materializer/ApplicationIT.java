@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import no.sysco.testing.kafka.embedded.EmbeddedSingleNodeKafkaCluster;
 import no.sysco.testing.kafka.pipeline.avro.Message;
+import no.sysco.testing.kafka.pipeline.materializer.domain.MessageRepresentationTransformer;
 import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebService;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -54,7 +55,7 @@ public class ApplicationIT {
     final MaterializerConfig testConfig =
         new MaterializerConfig("test", kafkaConfig, dbRestServiceConfig);
     final MaterializerApplication materializerApplication =
-        new MaterializerApplication(testConfig, true);
+        new MaterializerApplication(testConfig, new MessageRepresentationTransformer(), true);
 
     // send 3 records
     final KafkaProducer<String, Message> messageProducer =
@@ -102,7 +103,7 @@ public class ApplicationIT {
         new MaterializerConfig("test", kafkaConfig, dbRestServiceConfig);
 
     final MaterializerApplication materializerApplication =
-        new MaterializerApplication(testConfig, false);
+        new MaterializerApplication(testConfig, new MessageRepresentationTransformer(), false);
 
     // wiremock stub
     stubFor(
@@ -157,7 +158,7 @@ public class ApplicationIT {
         new MaterializerConfig("test", kafkaConfig, dbRestServiceConfig);
 
     final MaterializerApplication materializerApplication =
-        new MaterializerApplication(testConfig, false);
+        new MaterializerApplication(testConfig, new MessageRepresentationTransformer(), false);
 
     // start app
     materializerApplication.start();

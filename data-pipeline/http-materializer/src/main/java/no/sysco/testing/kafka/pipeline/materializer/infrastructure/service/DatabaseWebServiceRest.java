@@ -2,7 +2,7 @@ package no.sysco.testing.kafka.pipeline.materializer.infrastructure.service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
+
 import no.sysco.testing.kafka.pipeline.materializer.MaterializerConfig;
 import no.sysco.testing.kafka.pipeline.materializer.domain.MessageJsonRepresentation;
 import okhttp3.MediaType;
@@ -10,9 +10,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DatabaseWebServiceRest implements DatabaseWebService {
-  private static final Logger log = Logger.getLogger(DatabaseWebServiceRest.class.getName());
+  private static final Logger log = LoggerFactory.getLogger(DatabaseWebServiceRest.class.getName());
   private final String url;
   private final OkHttpClient client;
   private final MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -20,7 +22,7 @@ public class DatabaseWebServiceRest implements DatabaseWebService {
   public DatabaseWebServiceRest(final MaterializerConfig applicationConfig) {
     this.url = applicationConfig.databaseRestServiceConfig.url;
     this.client = new OkHttpClient();
-    log.info("Database REST service created: " + url);
+    log.info("Database REST service created: {}", url);
   }
 
   @Override
@@ -33,15 +35,15 @@ public class DatabaseWebServiceRest implements DatabaseWebService {
             .url(url)
             .post(body)
             .build();
-    log.info("Request created " + request);
+    log.info("Request created {}", request);
     try (Response response = client.newCall(request).execute()) {
       final int statusCode = response.code();
-      log.info("Request status " + statusCode);
+      log.info("Request status {}", statusCode);
       if (statusCode != 201) {
-        log.severe("Request failed with status code: " + statusCode);
+        log.error("Request failed with status code: {}", statusCode);
         throw new RuntimeException("Request failed with status " + statusCode);
       }
-      log.info("Response received successfully: " + statusCode);
+      log.info("Response received successfully: {}", statusCode);
     } catch (IOException e) {
       e.printStackTrace();
       throw new RuntimeException("Request failed ", e);

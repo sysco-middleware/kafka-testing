@@ -2,7 +2,7 @@ package no.sysco.testing.kafka.pipeline.materializer;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import java.util.logging.Logger;
+
 import no.sysco.testing.kafka.pipeline.materializer.domain.MessageRepresentationTransformer;
 import no.sysco.testing.kafka.pipeline.materializer.infrastructure.kafka.KafkaMessageMaterializer;
 import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebService;
@@ -10,13 +10,12 @@ import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.Datab
 import no.sysco.testing.kafka.pipeline.materializer.infrastructure.service.DatabaseWebServiceRest;
 
 public class MaterializerApplication {
-  private static Logger log = Logger.getLogger(MaterializerApplication.class.getName());
 
   private final DatabaseWebService dbWebService;
   private final MessageRepresentationTransformer transformer;
   private final KafkaMessageMaterializer kafkaMessageMaterializer;
 
-  public MaterializerApplication(MaterializerConfig materializerConfig, boolean inMemory) {
+  public MaterializerApplication(MaterializerConfig materializerConfig, MessageRepresentationTransformer transformer, boolean inMemory) {
     this.dbWebService =
         inMemory
             ? new DatabaseWebServiceInMemmory()
@@ -30,9 +29,11 @@ public class MaterializerApplication {
     // typesafe conf load
     final Config config = ConfigFactory.load();
     final MaterializerConfig materializerConfig = MaterializerConfig.loadConfig(config);
+    final MessageRepresentationTransformer messageRepresentationTransformer =
+        new MessageRepresentationTransformer();
 
     final MaterializerApplication materializerApplication =
-        new MaterializerApplication(materializerConfig, false);
+        new MaterializerApplication(materializerConfig,messageRepresentationTransformer, false);
 
     materializerApplication.start();
   }
