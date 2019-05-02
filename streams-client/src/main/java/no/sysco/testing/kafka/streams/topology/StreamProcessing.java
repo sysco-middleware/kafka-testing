@@ -2,7 +2,6 @@ package no.sysco.testing.kafka.streams.topology;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import no.sysco.testing.kafka.streams.utils.Tuple2;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
@@ -18,23 +17,25 @@ import org.apache.kafka.streams.state.KeyValueStore;
 public class StreamProcessing {
 
   // stateless
-  public static Topology topologyUpperCase(final Tuple2<String, String> topics) {
+  public static Topology topologyUpperCase(final String sourceTopic, final String sinkTopic) {
     final StreamsBuilder streamsBuilder = new StreamsBuilder();
     final KStream<String, String> sourceStream =
-        streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));
+        streamsBuilder.stream(sourceTopic, Consumed.with(Serdes.String(), Serdes.String()));
 
     sourceStream
         .mapValues((ValueMapper<String, String>) String::toUpperCase)
-        .to(topics._2, Produced.with(Serdes.String(), Serdes.String()));
+        .to(sinkTopic, Produced.with(Serdes.String(), Serdes.String()));
     return streamsBuilder.build();
   }
 
   // stateful
   public static Topology topologyCountAnagram(
-      final Tuple2<String, String> topics, final String storeName) {
+      final String sourceTopic,
+      final String sinkTopic,
+      final String storeName) {
     final StreamsBuilder streamsBuilder = new StreamsBuilder();
     final KStream<String, String> sourceStream =
-        streamsBuilder.stream(topics._1, Consumed.with(Serdes.String(), Serdes.String()));
+        streamsBuilder.stream(sourceTopic, Consumed.with(Serdes.String(), Serdes.String()));
     // 1. [null:"magic"] => ["acgim":"magic"]
     // 2. amount with same key
     sourceStream
@@ -49,7 +50,7 @@ public class StreamProcessing {
         .groupByKey()
         .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(storeName))
         .toStream()
-        .to(topics._2, Produced.with(Serdes.String(), Serdes.Long()));
+        .to(sinkTopic, Produced.with(Serdes.String(), Serdes.Long()));
     return streamsBuilder.build();
   }
 }
