@@ -74,12 +74,13 @@ public class ProducerRestApplicationIT {
     final ArrayList<Message> messages = new ArrayList<>();
 
     await()
-        .atMost(15, TimeUnit.SECONDS)
+        .atMost(25, TimeUnit.SECONDS)
         .untilAsserted(
             () -> {
-              final ConsumerRecords<String, Message> records = consumer.poll(Duration.ofSeconds(1));
-              for (final ConsumerRecord<String, Message> record : records)
+              final ConsumerRecords<String, Message> records = consumer.poll(Duration.ofMillis(100));
+              for (final ConsumerRecord<String, Message> record : records) {
                 messages.add(record.value());
+              }
               assertEquals(1, messages.size());
             });
   }
@@ -119,11 +120,12 @@ public class ProducerRestApplicationIT {
     properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, CLUSTER.bootstrapServers());
     properties.put(
         AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, CLUSTER.schemaRegistryUrl());
-    properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "client-1");
+    properties.put(ConsumerConfig.CLIENT_ID_CONFIG, "client-"+ UUID.randomUUID().toString());
     properties.put(ConsumerConfig.GROUP_ID_CONFIG, "gr-" + UUID.randomUUID().toString());
     properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
     return properties;
   }
 }

@@ -5,16 +5,17 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 import no.sysco.testing.kafka.pipeline.avro.Message;
 import no.sysco.testing.kafka.pipeline.producer.ProducerRestConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KafkaMessageProducer {
-  private static final Logger log = Logger.getLogger(KafkaMessageProducer.class.getName());
+  private static final Logger log = LoggerFactory.getLogger(KafkaMessageProducer.class);
   private final KafkaProducer<String, Message> producer;
   private final String sinkTopic;
 

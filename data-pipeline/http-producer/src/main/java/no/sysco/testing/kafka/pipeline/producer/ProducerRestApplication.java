@@ -4,14 +4,15 @@ import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
 import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import java.util.logging.Logger;
 import no.sysco.testing.kafka.pipeline.producer.domain.MessageRepresentationTransformer;
 import no.sysco.testing.kafka.pipeline.producer.infrastructure.kafka.KafkaMessageProducer;
 import no.sysco.testing.kafka.pipeline.producer.interfaces.rest.MessageResources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProducerRestApplication extends io.dropwizard.Application<ProducerRestConfig> {
 
-  private static Logger log = Logger.getLogger(ProducerRestApplication.class.getName());
+  private static Logger log = LoggerFactory.getLogger(ProducerRestApplication.class);
 
   public static void main(String[] args) throws Exception {
     new ProducerRestApplication().run(args);
@@ -28,7 +29,7 @@ public class ProducerRestApplication extends io.dropwizard.Application<ProducerR
 
   @Override
   public void run(ProducerRestConfig producerRestConfig, Environment environment) {
-    log.info("Configuration:\n " + producerRestConfig);
+    log.info("Configuration: {}\n", producerRestConfig);
     environment
         .healthChecks()
         .register(producerRestConfig.getName() + "HealthCheck", new ApplicationHealthCheck());

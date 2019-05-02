@@ -33,15 +33,7 @@
       <groupId>io.confluent</groupId>
       <artifactId>kafka-avro-serializer</artifactId>
     </dependency>
-    <!-- logger slf4j -> required for embedded kafka  -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
+
     <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>
@@ -58,6 +50,16 @@
       <artifactId>embedded-cluster</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- logger slf4j -> required for embedded kafka  -->
+    <!--  dropwizard has loggers already  -->
+<!--    <dependency>-->
+<!--      <groupId>org.slf4j</groupId>-->
+<!--      <artifactId>slf4j-log4j12</artifactId>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>org.slf4j</groupId>-->
+<!--      <artifactId>slf4j-api</artifactId>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>io.dropwizard</groupId>
       <artifactId>dropwizard-testing</artifactId>
