@@ -1,7 +1,6 @@
 package no.sysco.testing.kafka.streams.topology;
 
 import no.sysco.testing.kafka.streams.avro.Person;
-import no.sysco.testing.kafka.streams.utils.Tuple2;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
@@ -18,14 +17,17 @@ public class StreamProcessingLowLvlAvro {
 
   // stateful
   public static Topology topologyDedupByUserId(
-      final Tuple2<String, String> topics, final Serde<Person> personSerdes, final String idStore) {
+      final String sourceTopic,
+      final String sinkTopic,
+      final Serde<Person> personSerdes,
+      final String idStore) {
 
     final StreamsBuilder builder = new StreamsBuilder();
     builder
         .addStateStore(
             Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(idStore), Serdes.String(), personSerdes))
-        .stream(topics._1, Consumed.with(Serdes.String(), personSerdes))
+        .stream(sourceTopic, Consumed.with(Serdes.String(), personSerdes))
         .transform(
             () ->
                 new Transformer<String, Person, KeyValue<String, Person>>() {
@@ -56,7 +58,7 @@ public class StreamProcessingLowLvlAvro {
                   public void close() {}
                 },
             idStore)
-        .to(topics._2, Produced.with(Serdes.String(), personSerdes));
+        .to(sinkTopic, Produced.with(Serdes.String(), personSerdes));
 
     return builder.build();
   }

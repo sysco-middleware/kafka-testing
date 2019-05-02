@@ -1,7 +1,6 @@
 package no.sysco.testing.kafka.streams.topology;
 
 import no.sysco.testing.kafka.streams.avro.Person;
-import no.sysco.testing.kafka.streams.utils.Tuple2;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
@@ -16,9 +15,11 @@ public class StreamProcessingAvro {
 
   // stateless
   public static Topology topologyUpperCase(
-      final Tuple2<String, String> topics, final Serde<Person> personSerdes) {
+      final String sourceTopic,
+      final String sinkTopic,
+      final Serde<Person> personSerdes) {
     final StreamsBuilder builder = new StreamsBuilder();
-    builder.stream(topics._1, Consumed.with(Serdes.String(), personSerdes))
+    builder.stream(sourceTopic, Consumed.with(Serdes.String(), personSerdes))
         // .peek((k, v) -> System.out.printf("%s %s %s\n", v.getId(), v.getName(), v.getLastname()))
         .mapValues(
             person ->
@@ -27,22 +28,23 @@ public class StreamProcessingAvro {
                     .setName(person.getName().toUpperCase())
                     .setLastname(person.getLastname().toUpperCase())
                     .build())
-        .to(topics._2, Produced.with(Serdes.String(), personSerdes));
+        .to(sinkTopic, Produced.with(Serdes.String(), personSerdes));
     return builder.build();
   }
 
   // stateful
   public static Topology topologyCountUsersWithSameName(
-      final Tuple2<String, String> topics,
+      String sourceTopic,
+      String sinkTopic,
       final Serde<Person> personSerdes,
       final String storeName) {
 
     final StreamsBuilder builder = new StreamsBuilder();
-    builder.stream(topics._1, Consumed.with(Serdes.String(), personSerdes))
+    builder.stream(sourceTopic, Consumed.with(Serdes.String(), personSerdes))
         .groupBy((key, value) -> value.getName())
         .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(storeName))
         .toStream()
-        .to(topics._2, Produced.with(Serdes.String(), Serdes.Long()));
+        .to(sinkTopic, Produced.with(Serdes.String(), Serdes.Long()));
 
     return builder.build();
   }

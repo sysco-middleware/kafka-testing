@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import no.sysco.testing.kafka.streams.avro.Person;
-import no.sysco.testing.kafka.streams.utils.Tuple2;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.Serdes;
@@ -72,8 +71,7 @@ public class StreamProcessingLowLvlAvroTest {
     serde.configure(schema, false);
     // get topology
     final Topology topology =
-        StreamProcessingLowLvlAvro.topologyDedupByUserId(
-            new Tuple2<>(topicIn, topicOut), serde, storeName);
+        StreamProcessingLowLvlAvro.topologyDedupByUserId(topicIn, topicOut, serde, storeName);
     testDriver = new TopologyTestDriver(topology, properties);
 
     final ConsumerRecordFactory<String, Person> factory =
@@ -112,8 +110,7 @@ public class StreamProcessingLowLvlAvroTest {
     serde.configure(schema, false);
     // get topology
     final Topology topology =
-        StreamProcessingLowLvlAvro.topologyDedupByUserId(
-            new Tuple2<>(topicIn, topicOut), serde, storeName);
+        StreamProcessingLowLvlAvro.topologyDedupByUserId(topicIn, topicOut, serde, storeName);
     testDriver = new TopologyTestDriver(topology, properties);
 
     final ConsumerRecordFactory<String, Person> factory =

@@ -3,7 +3,6 @@ package no.sysco.testing.kafka.streams.topology;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Properties;
-import no.sysco.testing.kafka.streams.utils.Tuple2;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.LongDeserializer;
@@ -47,7 +46,7 @@ public class StreamProcessingTest {
   @Test
   public void testTopology_statelessProcessors_Uppercase() {
     // Arrange
-    final Topology topology = StreamProcessing.topologyUpperCase(new Tuple2<>(topicIn, topicOut));
+    final Topology topology = StreamProcessing.topologyUpperCase(topicIn, topicOut);
     testDriver = new TopologyTestDriver(topology, properties);
     final ConsumerRecordFactory<String, String> factory =
         new ConsumerRecordFactory<>(topicIn, new StringSerializer(), new StringSerializer());
@@ -75,7 +74,7 @@ public class StreamProcessingTest {
     // Arrange
     final String storeName = "count-storage";
     final Topology topology =
-        StreamProcessing.topologyCountAnagram(new Tuple2<>(topicIn, topicOut), storeName);
+        StreamProcessing.topologyCountAnagram(topicIn, topicOut, storeName);
     // setup TopologyTestDriver
     testDriver = new TopologyTestDriver(topology, properties);
     final ConsumerRecordFactory<String, String> factory =
