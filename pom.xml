@@ -34,6 +34,8 @@
     <junit.version>4.12</junit.version>
     <awaitility.version>3.1.6</awaitility.version>
     <wiremock.version>2.22.0</wiremock.version>
+    <rest-assured.version>3.0.1</rest-assured.version>
+    <jackson.version>2.9.8</jackson.version>
 
     <failsafe.plugin.version>2.22.1</failsafe.plugin.version>
     <skipIntegrationTests>true</skipIntegrationTests>
@@ -89,6 +91,13 @@
         <artifactId>kafka-streams</artifactId>
         <version>${kafka.apis.version}</version>
       </dependency>
+      <!--mapping-->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+        <scope>test</scope>
+      </dependency>
       <!--avro related-->
       <dependency>
         <groupId>org.apache.avro</groupId>
@@ -139,6 +148,12 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${awaitility.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${rest-assured.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
