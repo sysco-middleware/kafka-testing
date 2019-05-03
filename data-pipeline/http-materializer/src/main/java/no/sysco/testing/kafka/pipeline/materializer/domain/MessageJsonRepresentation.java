@@ -1,8 +1,5 @@
 package no.sysco.testing.kafka.pipeline.materializer.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MessageJsonRepresentation {
 
   private String id;
