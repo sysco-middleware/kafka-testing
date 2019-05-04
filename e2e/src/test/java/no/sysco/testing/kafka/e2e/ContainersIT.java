@@ -16,7 +16,6 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -90,11 +89,14 @@ public class ContainersIT {
         .then()
         .statusCode(202);
 
-    await().pollDelay(5, TimeUnit.SECONDS).until(() -> {
-      System.out.println("Materializer LOG");
-      System.out.println(httpMaterializer.getLogs());
-      return true;
-    });
+    //await()
+    //    .pollDelay(5, TimeUnit.SECONDS)
+    //    .until(
+    //        () -> {
+    //          System.out.println("Materializer LOG");
+    //          System.out.println(httpMaterializer.getLogs());
+    //          return true;
+    //        });
 
     await()
         .atMost(70, TimeUnit.SECONDS)
@@ -104,30 +106,12 @@ public class ContainersIT {
                   RestAssured.given()
                       .get(JSON_SERVER_EXPOSED + "/messages/" + id)
                       .then()
-                      //.statusCode(200)
+                      // .statusCode(200)
                       .extract()
                       .as(MessageJsonRepresentation.class);
 
               assertNotNull(jsonPresentation);
-              //final List<MessageJsonRepresentation> messageJsonRepresentations =
-              //    Arrays.asList(
-              //        RestAssured.given()
-              //            .get(JSON_SERVER_EXPOSED + "/messages")
-              //            .then()
-              //            .statusCode(200)
-              //            .extract()
-              //            .as(MessageJsonRepresentation[].class));
-              //
-              //
-              //
-              //assertTrue(messageJsonRepresentations.size() > 1);
-
-              //assertEquals(from, jsonPresentation.getFrom());
-              //assertEquals(to, jsonPresentation.getTo());
-              //assertEquals(text, jsonPresentation.getText());
             });
-
-
   }
 
   private static void setZookeeperAndKafka() {
@@ -166,7 +150,7 @@ public class ContainersIT {
     jsonServer.start();
     // provide availability make http calls from localhost against docker env
     JSON_SERVER_EXPOSED = LOCAL_HOST + ":" + jsonServer.getMappedPort(80);
-    JSON_SERVER_INSIDE_DOCKER_ENV = "http://" + jsonServer.getNetworkAliases().get(0)+":80";
+    JSON_SERVER_INSIDE_DOCKER_ENV = "http://" + jsonServer.getNetworkAliases().get(0) + ":80";
   }
 
   private static void setHttProducer() {
@@ -188,8 +172,8 @@ public class ContainersIT {
 
     createTopic(TOPIC);
 
-    String messageEndpoint =  "http://json-server/messages";
-    System.out.println("HERE: "+messageEndpoint);
+    String messageEndpoint = "http://json-server/messages";
+    System.out.println("HERE: " + messageEndpoint);
     httpMaterializer =
         new GenericContainer("zhenik/http-materializer:data-pipeline")
             .withNetwork(kafka.getNetwork())

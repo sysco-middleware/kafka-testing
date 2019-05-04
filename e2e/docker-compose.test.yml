@@ -1,0 +1,91 @@
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.1.1
+    ports:
+      - 2181:2181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka:
+    image: confluentinc/cp-kafka:5.1.1
+    ports:
+      - 9092:9092
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    depends_on:
+      - zookeeper
+  # This "container" is a workaround to pre-create topics
+  # https://github.com/confluentinc/examples/blob/f854ac008952346ceaba0d1f1a352788f0572c74/microservices-orders/docker-compose.yml#L182-L215
+  kafka-setup:
+    image: confluentinc/cp-kafka:5.1.1
+    hostname: kafka-setup
+    container_name: kafka-setup
+    depends_on:
+      - kafka
+      - zookeeper
+    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+                 cub kafka-ready -b kafka:9092 1 30 && \
+                 kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic events-message-v1 && \
+                 sleep 60'"
+    environment:
+      # The following settings are listed here only to satisfy the image's requirements.
+      # We override the image's `command` anyways, hence this container will not start a broker.
+      KAFKA_BROKER_ID: ignored
+      KAFKA_ZOOKEEPER_CONNECT: ignored
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:5.1.1
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: localhost
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
+    depends_on:
+      - kafka
+
+  #  DATA PIPELINE SERVICES
+
+  # https://github.com/clue/docker-json-server
+  db-mock:
+    image: zhenik/json-server
+    environment:
+      ID_MAP: id
+    ports:
+      - "3000:80"
+    volumes:
+      - ./src/test/resources/json-server-database.json:/data/db.json
+
+  http-producer:
+    image: zhenik/http-producer:data-pipeline
+    environment:
+      APPLICATION_PORT: 8080
+      ADMIN_PORT: 8081
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      SINK_TOPIC: events-message-v1
+    ports:
+      - "8080:8080"
+
+  http-materializer:
+    image: zhenik/http-materializer:data-pipeline
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      SOURCE_TOPIC: events-message-v1
+      DATABASE_REST_SERVICE_URL: http://db-mock:80/messages
+    restart: always
+    depends_on:
+      - zookeeper
+      - kafka
+      - db-mock
+      - kafka-setup
+      - http-producer
+      - schema-registry
