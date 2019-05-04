@@ -89,15 +89,6 @@ public class ContainersIT {
         .then()
         .statusCode(202);
 
-    //await()
-    //    .pollDelay(5, TimeUnit.SECONDS)
-    //    .until(
-    //        () -> {
-    //          System.out.println("Materializer LOG");
-    //          System.out.println(httpMaterializer.getLogs());
-    //          return true;
-    //        });
-
     await()
         .atMost(70, TimeUnit.SECONDS)
         .untilAsserted(
