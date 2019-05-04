@@ -1,14 +1,14 @@
 version: '3'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:5.1.2
+    image: confluentinc/cp-zookeeper:5.1.1
     ports:
       - 2181:2181
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
   kafka:
-    image: confluentinc/cp-kafka:5.1.2
+    image: confluentinc/cp-kafka:5.1.1
     ports:
       - 9092:9092
       - 29092:29092
@@ -23,7 +23,7 @@ services:
       - zookeeper
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:5.1.2
+    image: confluentinc/cp-schema-registry:5.1.1
     ports:
       - 8081:8081
     environment:
@@ -59,9 +59,16 @@ services:
 
   http-materializer:
     image: zhenik/http-materializer:data-pipeline
-    build: http-materializer
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
       SOURCE_TOPIC: events-message-v1
       DATABASE_REST_SERVICE_URL: http://db-mock:80/messages
+    restart: always
+    depends_on:
+      - zookeeper
+      - kafka
+      - db-mock
+      - kafka-setup
+      - http-producer
+      - schema-registry
