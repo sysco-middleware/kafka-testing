@@ -20,13 +20,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
 
     <kafka.apis.version>2.1.1</kafka.apis.version>
     <confluent.platform.version>5.1.1</confluent.platform.version>
 
-    <!--  todo: downgrade avro to 1.8.1 due to some problems on common lib confluent  -->
     <avro.version>1.8.2</avro.version>
     <slf4j.logger.version>1.7.25</slf4j.logger.version>
     <shade.plugin.version>3.2.1</shade.plugin.version>

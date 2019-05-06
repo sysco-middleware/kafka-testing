@@ -24,7 +24,7 @@ public class ContainersIT {
 
   public static final String LOCAL_HOST = "http://localhost";
   public static final String TOPIC = "events-message-v1";
-  public static final String confluentPlatformVersion = "5.1.1";
+  public static final String CONFLUENT_PLATFORM_VERSION = "5.1.1";
 
   // kafka env
   public static KafkaContainer kafka;
@@ -53,7 +53,7 @@ public class ContainersIT {
   }
 
   @Test
-  public void isRunning() {
+  public void is_running() {
     assertTrue(kafka.isRunning());
     assertTrue(schemaRegistry.isRunning());
 
@@ -73,7 +73,7 @@ public class ContainersIT {
   }
 
   @Test
-  public void data_pipeline_flow_success() {
+  public void test_data_pipeline_flow_successful() {
     String id = UUID.randomUUID().toString();
     String from = UUID.randomUUID().toString();
     String to = UUID.randomUUID().toString();
@@ -106,7 +106,7 @@ public class ContainersIT {
   }
 
   private static void setZookeeperAndKafka() {
-    kafka = new KafkaContainer(confluentPlatformVersion);
+    kafka = new KafkaContainer(CONFLUENT_PLATFORM_VERSION);
     kafka.start();
   }
 
@@ -114,7 +114,7 @@ public class ContainersIT {
     // get network alias to be able connect other container to env
     KAFKA_BROKER_INSIDE_DOCKER_ENV = "PLAINTEXT://" + kafka.getNetworkAliases().get(0) + ":9092";
     schemaRegistry =
-        new GenericContainer("confluentinc/cp-schema-registry:" + confluentPlatformVersion)
+        new GenericContainer("confluentinc/cp-schema-registry:" + CONFLUENT_PLATFORM_VERSION)
             .withExposedPorts(8081)
             .withNetwork(kafka.getNetwork())
             .withEnv("SCHEMA_REGISTRY_HOST_NAME", "localhost")

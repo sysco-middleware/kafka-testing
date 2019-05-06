@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 public class DockerComposeIT {
 
-  public static final String TOPIC = "events-message-v1";
   public static final String JSON_SERVER_EXPOSED = "http://localhost:3000";
   public static final String HTTP_PRODUCER_EXPOSED = "http://localhost:8080";
 
@@ -32,7 +31,7 @@ public class DockerComposeIT {
           .waitingFor("http-producer_1", Wait.forHttp("/messages").forStatusCode(200));
 
   @Test
-  public void isRunning() {
+  public void is_running() {
     final List<MessageJsonRepresentation> messageJsonRepresentations =
         Arrays.asList(
             RestAssured.given()
@@ -45,7 +44,7 @@ public class DockerComposeIT {
   }
 
   @Test
-  public void data_pipeline_flow_success() {
+  public void test_data_pipeline_flow_successful() {
     String id = UUID.randomUUID().toString();
     String from = UUID.randomUUID().toString();
     String to = UUID.randomUUID().toString();
