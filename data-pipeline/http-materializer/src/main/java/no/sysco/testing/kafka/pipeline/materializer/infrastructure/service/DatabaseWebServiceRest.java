@@ -46,6 +46,7 @@ public class DatabaseWebServiceRest implements DatabaseWebService {
       log.info("Response received successfully: {}", statusCode);
     } catch (IOException e) {
       e.printStackTrace();
+      log.error(e.getMessage());
       throw new RuntimeException("Request failed ", e);
     }
   }

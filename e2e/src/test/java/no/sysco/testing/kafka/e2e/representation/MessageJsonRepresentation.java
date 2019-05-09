@@ -1,4 +1,4 @@
-package no.sysco.testing.kafka.pipeline.materializer.domain;
+package no.sysco.testing.kafka.e2e.representation;
 
 public class MessageJsonRepresentation {
 

@@ -21,6 +21,24 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
     depends_on:
       - zookeeper
+  # This "container" is a workaround to pre-create topics
+  # https://github.com/confluentinc/examples/blob/f854ac008952346ceaba0d1f1a352788f0572c74/microservices-orders/docker-compose.yml#L182-L215
+  kafka-setup:
+    image: confluentinc/cp-kafka:5.1.1
+    hostname: kafka-setup
+    container_name: kafka-setup
+    depends_on:
+      - kafka
+      - zookeeper
+    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+                 cub kafka-ready -b kafka:9092 1 30 && \
+                 kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic events-message-v1 && \
+                 sleep 30'"
+    environment:
+      # The following settings are listed here only to satisfy the image's requirements.
+      # We override the image's `command` anyways, hence this container will not start a broker.
+      KAFKA_BROKER_ID: ignored
+      KAFKA_ZOOKEEPER_CONNECT: ignored
 
   schema-registry:
     image: confluentinc/cp-schema-registry:5.1.1
@@ -43,11 +61,10 @@ services:
     ports:
       - "3000:80"
     volumes:
-      - ./database.json:/data/db.json
+      - ./src/test/resources/json-server-database.json:/data/db.json
 
   http-producer:
     image: zhenik/http-producer:data-pipeline
-    build: http-producer
     environment:
       APPLICATION_PORT: 8080
       ADMIN_PORT: 8081

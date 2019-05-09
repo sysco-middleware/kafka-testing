@@ -50,7 +50,9 @@ public class KafkaMessageMaterializer implements Runnable {
         StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
     properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
     this.kafkaStreams = new KafkaStreams(topology(), properties);
-    kafkaStreams.setUncaughtExceptionHandler((Thread t, Throwable e) -> log.error(e.getMessage()));
+    kafkaStreams.setUncaughtExceptionHandler((Thread t, Throwable e) ->
+        log.error(e.getMessage())
+    );
   }
 
   static Topology topology(

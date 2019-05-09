@@ -20,13 +20,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
 
     <kafka.apis.version>2.1.1</kafka.apis.version>
     <confluent.platform.version>5.1.1</confluent.platform.version>
 
-    <!--  todo: downgrade avro to 1.8.1 due to some problems on common lib confluent  -->
     <avro.version>1.8.2</avro.version>
     <slf4j.logger.version>1.7.25</slf4j.logger.version>
     <shade.plugin.version>3.2.1</shade.plugin.version>
@@ -34,6 +33,8 @@
     <junit.version>4.12</junit.version>
     <awaitility.version>3.1.6</awaitility.version>
     <wiremock.version>2.22.0</wiremock.version>
+    <rest-assured.version>3.0.1</rest-assured.version>
+    <jackson.version>2.9.8</jackson.version>
 
     <failsafe.plugin.version>2.22.1</failsafe.plugin.version>
     <skipIntegrationTests>true</skipIntegrationTests>
@@ -89,6 +90,12 @@
         <artifactId>kafka-streams</artifactId>
         <version>${kafka.apis.version}</version>
       </dependency>
+      <!--mapping-->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
       <!--avro related-->
       <dependency>
         <groupId>org.apache.avro</groupId>
@@ -139,6 +146,12 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${awaitility.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${rest-assured.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
