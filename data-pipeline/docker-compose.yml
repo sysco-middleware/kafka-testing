@@ -56,6 +56,10 @@ services:
       SINK_TOPIC: events-message-v1
     ports:
       - "8080:8080"
+    depends_on:
+      - zookeeper
+      - kafka
+      - schema-registry
 
   http-materializer:
     image: zhenik/http-materializer:data-pipeline
@@ -70,5 +74,4 @@ services:
       - kafka
       - db-mock
       - kafka-setup
-      - http-producer
       - schema-registry

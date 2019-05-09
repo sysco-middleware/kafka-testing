@@ -33,7 +33,7 @@ services:
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                  cub kafka-ready -b kafka:9092 1 30 && \
                  kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic events-message-v1 && \
-                 sleep 60'"
+                 sleep 30'"
     environment:
       # The following settings are listed here only to satisfy the image's requirements.
       # We override the image's `command` anyways, hence this container will not start a broker.
@@ -73,6 +73,10 @@ services:
       SINK_TOPIC: events-message-v1
     ports:
       - "8080:8080"
+    depends_on:
+      - zookeeper
+      - kafka
+      - schema-registry
 
   http-materializer:
     image: zhenik/http-materializer:data-pipeline
@@ -87,5 +91,4 @@ services:
       - kafka
       - db-mock
       - kafka-setup
-      - http-producer
       - schema-registry
