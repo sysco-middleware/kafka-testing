@@ -1,3 +1,4 @@
+[![Build Status](https://www.travis-ci.org/sysco-middleware/kafka-testing.svg?branch=master)](https://www.travis-ci.org/sysco-middleware/kafka-testing)
 # Kafka-clients: writing automated tests [WIP]
 Run all tests:
 ```
@@ -13,9 +14,9 @@ Approach covers testing topologies (stateful & stateless processors) with differ
 5. [e2e](./e2e) end-to-end test for data pipeline.
 
 ### TODO:
-- Makefile
-- update vers java  `8 -> 12`  `!NB`: Reflection use -> only java8 currently 
-- update vers junit `4 -> 5` 
+- [ ] Makefile
+- [ ] update vers java  `8 -> 12`  `!NB`: Reflection use -> only java8 currently 
+- [ ] update vers junit `4 -> 5` 
 
 ### Important notes
  - [Confluent Platform and Apache Kafka Compatibility](https://docs.confluent.io/current/installation/versions-interoperability.html#cp-and-apache-kafka-compatibility)
