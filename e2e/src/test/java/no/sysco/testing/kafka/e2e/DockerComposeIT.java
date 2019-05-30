@@ -19,23 +19,28 @@ import static org.junit.Assert.assertTrue;
 
 public class DockerComposeIT {
 
-    public static final String JSON_SERVER_EXPOSED = "http://localhost:3000";
-    public static final String HTTP_PRODUCER_EXPOSED = "http://localhost:8080";
+    private static final String JSON_SERVER_URL = "http://localhost:3000";
+    private static final String HTTP_PRODUCER_BASE_URL = "http://localhost:8080";
 
-    @ClassRule
-    public static DockerComposeContainer environment =
-            new DockerComposeContainer(new File("docker-compose.test.yml"))
-                    .withLocalCompose(true)
-                    .waitingFor("db-mock_1", Wait.forHttp("/").forStatusCode(200))
-                    .waitingFor("schema-registry_1", Wait.forHttp("/subjects").forStatusCode(200))
-                    .waitingFor("http-producer_1", Wait.forHttp("/messages").forStatusCode(200));
+  /**
+   * Environment container contains composition of containers which are declared
+   * in docker-compose.test.yml file. Use a local Docker Compose binary.
+   * Waiting strategies are applied to `service-name` with suffix `_1`
+   */
+  @ClassRule
+  public static DockerComposeContainer environment =
+      new DockerComposeContainer(new File("docker-compose.test.yml"))
+          .withLocalCompose(true)
+          .waitingFor("db-mock_1", Wait.forHttp("/").forStatusCode(200))
+          .waitingFor("schema-registry_1", Wait.forHttp("/subjects").forStatusCode(200))
+          .waitingFor("http-producer_1", Wait.forHttp("/messages").forStatusCode(200));
 
     @Test
     public void is_running() {
         final List<MessageJsonRepresentation> messageJsonRepresentations =
                 Arrays.asList(
                         RestAssured.given()
-                                .get(JSON_SERVER_EXPOSED + "/messages")
+                                .get(JSON_SERVER_URL + "/messages")
                                 .then()
                                 .statusCode(200)
                                 .extract()
@@ -56,22 +61,22 @@ public class DockerComposeIT {
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(messageJsonRepresentation)
-                .post(HTTP_PRODUCER_EXPOSED + "/messages")
+                .post(HTTP_PRODUCER_BASE_URL + "/messages")
                 .then()
                 .statusCode(202);
 
         await()
-                .atMost(70, TimeUnit.SECONDS)
+                .atMost(10, TimeUnit.SECONDS)
                 .untilAsserted(
                         () -> {
-                            MessageJsonRepresentation jsonPresentation =
+                            MessageJsonRepresentation jsonRepresentation =
                                     RestAssured.given()
-                                            .get(JSON_SERVER_EXPOSED + "/messages/" + id)
+                                            .get(JSON_SERVER_URL + "/messages/" + id)
                                             .then()
                                             .extract()
                                             .as(MessageJsonRepresentation.class);
 
-                            assertNotNull(jsonPresentation);
+                            assertNotNull(jsonRepresentation);
                         });
     }
 }
