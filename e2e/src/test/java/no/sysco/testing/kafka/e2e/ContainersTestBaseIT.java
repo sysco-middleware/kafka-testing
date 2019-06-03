@@ -1,6 +1,5 @@
 package no.sysco.testing.kafka.e2e;
 
-import org.junit.BeforeClass;
 import org.testcontainers.containers.*;
 import org.testcontainers.containers.wait.strategy.Wait;
 import static org.junit.Assert.fail;
@@ -30,10 +29,9 @@ public abstract class ContainersTestBaseIT {
 
     static GenericContainer httpMaterializer;
 
-    @BeforeClass
-    public static void start() {
+    // singleton containers https://www.testcontainers.org/test_framework_integration/manual_lifecycle_control/#singleton-containers
+    static  {
         final Network commonNetwork = Network.newNetwork();
-
         setZookeeperAndKafka(commonNetwork);
         setSchemaRegistry(commonNetwork);
         setJsonServer(commonNetwork);
@@ -53,8 +51,8 @@ public abstract class ContainersTestBaseIT {
                 new GenericContainer("confluentinc/cp-schema-registry:" + CONFLUENT_PLATFORM_VERSION)
                         .withExposedPorts(8081)
                         .withNetwork(network)
-                        .withEnv("SCHEMA_REGISTRY_HOST_NAME", "localhost")
-                        .withEnv("SCHEMA_REGISTRY_LISTENERS", "http://0.0.0.0:8081")
+                        .withEnv("SCHEMA_REGISTRY_HOST_NAME", "localhost") // loopback to the container
+                        .withEnv("SCHEMA_REGISTRY_LISTENERS", "http://0.0.0.0:8081") // loopback to the container
                         .withEnv("SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS", KAFKA_BROKER_INSIDE_DOCKER_ENV)
                         .waitingFor(Wait.forHttp("/subjects").forStatusCode(200));
         schemaRegistry.start();
