@@ -19,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 
 public class DockerComposeIT {
 
-    private static final String JSON_SERVER_URL = "http://localhost:3000";
-    private static final String HTTP_PRODUCER_BASE_URL = "http://localhost:8080";
+    private String JSON_SERVER_URL;
+    private String HTTP_PRODUCER_BASE_URL;
 
   /**
    * Environment container contains composition of containers which are declared
@@ -33,10 +33,14 @@ public class DockerComposeIT {
           .withLocalCompose(true)
           .waitingFor("db-mock_1", Wait.forHttp("/").forStatusCode(200))
           .waitingFor("schema-registry_1", Wait.forHttp("/subjects").forStatusCode(200))
-          .waitingFor("http-producer_1", Wait.forHttp("/messages").forStatusCode(200));
+          .waitingFor("http-producer_1", Wait.forHttp("/messages").forStatusCode(200))
+          .withExposedService("db-mock_1", 80)
+          .withExposedService("http-producer_1", 8080);
 
     @Test
     public void is_running() {
+//        System.out.println("HERE: "+environment.getServiceHost("db-mock_1", 80)+":"+environment.getServicePort("db-mock_1", 80));
+        JSON_SERVER_URL = "http://" + environment.getServiceHost("db-mock_1", 80) + ":" + environment.getServicePort("db-mock_1", 80);
         final List<MessageJsonRepresentation> messageJsonRepresentations =
                 Arrays.asList(
                         RestAssured.given()
@@ -50,6 +54,9 @@ public class DockerComposeIT {
 
     @Test
     public void test_data_pipeline_flow_successful() {
+        JSON_SERVER_URL = "http://" + environment.getServiceHost("db-mock_1", 80) + ":" + environment.getServicePort("db-mock_1", 80);
+        HTTP_PRODUCER_BASE_URL = "http://" + environment.getServiceHost("http-producer_1", 8080) + ":" + environment.getServicePort("http-producer_1", 8080);
+
         String id = UUID.randomUUID().toString();
         String from = UUID.randomUUID().toString();
         String to = UUID.randomUUID().toString();
