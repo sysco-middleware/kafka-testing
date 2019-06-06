@@ -65,6 +65,7 @@ services:
 
   http-producer:
     image: zhenik/http-producer:data-pipeline
+    build: ../data-pipeline/http-producer
     environment:
       APPLICATION_PORT: 8080
       ADMIN_PORT: 8081
@@ -80,6 +81,7 @@ services:
 
   http-materializer:
     image: zhenik/http-materializer:data-pipeline
+    build: ../data-pipeline/http-materializer
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
