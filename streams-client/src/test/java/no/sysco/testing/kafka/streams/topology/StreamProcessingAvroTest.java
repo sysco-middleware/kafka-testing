@@ -30,10 +30,6 @@ import static org.junit.Assert.assertEquals;
 public class StreamProcessingAvroTest {
   private final String topicIn = "topic-in";
   private final String topicOut = "topic-out";
-  private final String schemaUrl = "http://localhost:8081";
-  // http://localhost:8081/subjects/topic-in-value/versions/latest
-  // only for TopicNameStrategy
-  private final String mockedUrl = schemaUrl + "/subjects/" + topicIn + "-value/versions/latest";
   private TopologyTestDriver testDriver;
   private MockSchemaRegistryClient schemaRegistryClient;
   private Properties properties;
@@ -45,7 +41,7 @@ public class StreamProcessingAvroTest {
     properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "stream-id-test-5");
     properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "dummy:9922");
     properties.put(
-        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://localhost:8081");
+        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://mocked:8081");
     properties.put(
         StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
     properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);

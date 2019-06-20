@@ -34,7 +34,7 @@
     <awaitility.version>3.1.6</awaitility.version>
     <wiremock.version>2.22.0</wiremock.version>
     <rest-assured.version>3.0.1</rest-assured.version>
-    <jackson.version>2.9.8</jackson.version>
+    <jackson.version>2.9.9</jackson.version>
 
     <failsafe.plugin.version>2.22.1</failsafe.plugin.version>
     <skipIntegrationTests>true</skipIntegrationTests>

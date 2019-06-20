@@ -41,7 +41,7 @@ public class StreamProcessingLowLvlAvroTest {
     properties.put(StreamsConfig.CLIENT_ID_CONFIG, "client-id-test-1");
     properties.put(StreamsConfig.APPLICATION_ID_CONFIG, "stream-id-test-5");
     properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "dummy:9922");
-    properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://whatever:4242");
+    properties.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://mocked:4242");
     properties.put(
         StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
     properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
